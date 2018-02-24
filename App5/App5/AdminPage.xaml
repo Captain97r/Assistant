@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:App5"
+             x:Class="App5.AdminPage">
+
+    <ListView x:Name="rooms_list"
+              HasUnevenRows="True"
+              ItemsSource="{Binding players}"
+              ItemTapped="OnItemTapped">
+    <ListView.Header>
+            <StackLayout Padding="30,5,0,5" BackgroundColor="#cccccc">
+                <Label Text="Игроки в комнате: " FontSize="20"/>
+            </StackLayout>
+        </ListView.Header>
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <local:ExtendedViewCell Height="50" SelectedBackgroundColor="Blue">
+                    <RelativeLayout>
+                        <Label x:Name="ID" Text="{Binding user}" FontSize="18" TextColor="Black"
+                                        RelativeLayout.XConstraint = "{ConstraintExpression Type=RelativeToParent,
+                                        Property=Width, Factor=0, Constant=40}"
+                                        RelativeLayout.YConstraint = "{ConstraintExpression Type=RelativeToParent, 
+                                        Property=Height, Factor=0, Constant=15}"/>
+                    </RelativeLayout>
+                </local:ExtendedViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+
+</ContentPage>

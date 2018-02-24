@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:App5"
+             x:Class="App5.AuthorizationMenu">
+    <Grid ColumnSpacing="-3" RowSpacing="-3">
+        <Grid.ColumnDefinitions>
+
+            <ColumnDefinition Width="*" />
+
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+
+        </Grid.RowDefinitions>
+
+        <Frame Grid.Column="0" Grid.Row="0" >
+           
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="1" >
+            <Button x:Name="Auth_button" Text="Авторизация"  Clicked="Auth"/>
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="2" >
+            <Button x:Name="Reg_clicked" Text="Регистрация"  Clicked="Reg"/>
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="3" >
+        </Frame>
+
+    </Grid>
+</ContentPage>

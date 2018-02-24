@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App5.EditUserChars"
+             Title="Характеристики">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout>
+                <Label Text="Быстрые действия: " HorizontalTextAlignment="Center" FontSize="18"/>
+
+                <Button x:Name="aliveStatusButton" Text="Убить/воскресить" Clicked="isAliveChange_Clicked"/>
+
+                <Button x:Name="lightWoundButton" Text="Легкое ранение" Clicked="LightWound_Clicked"/>
+
+                <Button x:Name="regularWoundButton" Text="Ранение" Clicked="RegularWound_Clicked"/>
+
+                <Button x:Name="HeavyWoundButton" Text="Тяжелое ранение" Clicked="HeavyWound_Clicked"/>
+
+                <Button x:Name="anomalyButton" Text="Попадание в аномалию" Clicked="Anomaly_Clicked"/>
+
+                <Label Text="Характеристики игрока: " HorizontalTextAlignment="Center" FontSize="18"/>
+
+                <Label x:Name="hp" Text="Slider" Margin="15, 0 , 0 , 0" FontSize="17" TextColor="Black" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
+                <Slider x:Name="sliderHp" Minimum="0" Maximum="100" Value="{Binding Path=hp}" ValueChanged="OnHpChanged" />
+
+                <Label x:Name="rad" Text="Slider" Margin="15, 0 , 0 , 0" FontSize="17" TextColor="Black" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
+                <Slider x:Name="sliderRad" Minimum="0" Maximum="100" Value="{Binding Path=radiation}" ValueChanged="OnRadChanged" />
+
+                <Label x:Name="hunger" Text="Slider" Margin="15, 0 , 0 , 0" FontSize="17" TextColor="Black" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
+                <Slider x:Name="sliderHunger" Minimum="0" Maximum="100" Value="{Binding Path=hunger}" ValueChanged="OnHungerChanged" />
+
+                <Label Text="{Binding Path=isAlive, StringFormat='Состояние: {0}'}" TextColor="Black" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+                <Label Text="{Binding Path=money, StringFormat='Деньги: {0}'}" TextColor="Black" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+                <Label Text="{Binding Path=first_char, StringFormat='Первая характеристика: {0}'}" TextColor="Black" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+                <Label Text="{Binding Path=second_char, StringFormat='Вторая характеристика: {0}'}" TextColor="Black" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+                <Label Text="{Binding Path=third_char, StringFormat='Третья характеристика: {0}'}" TextColor="Black" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+                <Label Text="{Binding Path=fourth_char, StringFormat='Четвертая характеристика: {0}'}" TextColor="Black" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+                <Label Text="{Binding Path=fifth_char, StringFormat='Пятая характеристика: {0}'}" TextColor="Black" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+
+                <Button x:Name="applyButton" Text="Применить" Clicked="Apply_Clicked"/>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:App5"
+             x:Class="App5.MainPage">
+
+    <Grid ColumnSpacing="-3" RowSpacing="-3">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+
+
+        <Frame Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Margin="0" Padding="0" OutlineColor="White">
+            <Label Text="Статус игрока" FontSize="Large" TextColor="Red"
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+        </Frame>
+
+
+        <Frame Grid.Column="2" Grid.Row="1" Margin="0" Padding="0" OutlineColor="White">
+            <Label Text="{Binding Path=isAlive, StringFormat='{0}  '}" FontSize="Small" TextColor="LightGreen"
+                   VerticalOptions="Center" HorizontalOptions="End"/>
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="0" Padding="0" OutlineColor="White">
+            <Label Text="{Binding Path=user, StringFormat='  {0}'}" FontSize="Small" TextColor="LightGreen"
+                   VerticalOptions="Center" HorizontalOptions="Start"/>
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="2" Margin="0" Padding="0" OutlineColor="White">
+            <Label Text="{Binding Path=hp, StringFormat='HP: {0}'}" TextColor="Green" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+        </Frame>
+
+
+        <Frame Grid.Column="1" Grid.Row="2" Margin="0" Padding="0" OutlineColor="White">
+            <Label Text="{Binding Path=radiation, StringFormat='Радиация: {0} рад'}" TextColor="Green" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+        </Frame>
+
+        <Frame Grid.Column="2" Grid.Row="2" Margin="0" Padding="0" OutlineColor="White">
+            <Label Text="{Binding Path=hunger, StringFormat='Голод: {0}'}" TextColor="Green" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" Margin="0" Padding="0" OutlineColor="White">
+        </Frame>
+        
+        <Frame Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" Margin="0" Padding="0" OutlineColor="White">
+            <Button x:Name="Inventory" Text="Инвентарь" Clicked="inventory_clicked"/>
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" Margin="0" Padding="0" OutlineColor="White">
+            <Button x:Name="Notes" Text="Заметки" Clicked="inventory_clicked"/>
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" Margin="0" Padding="0" OutlineColor="White">
+            <Button x:Name="Map" Text="Карта" Clicked="inventory_clicked"/>
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" Margin="0" Padding="0" OutlineColor="White">
+            <Button x:Name="Interface" Text="Взаимодействие" Clicked="inventory_clicked"/>
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="3" Margin="0" Padding="0" OutlineColor="White">
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="3" Margin="0" Padding="0" OutlineColor="White">
+            <StackLayout>
+            <Label Text="{Binding Path=first_char, StringFormat='Первая характет=ристика: {0}'}" TextColor="Black" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+            <Label Text="{Binding Path=second_char, StringFormat='Вторая характеристика: {0}'}" TextColor="Black" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+            <Label Text="{Binding Path=third_char, StringFormat='Третья характеристика: {0}'}" TextColor="Black" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+            <Label Text="{Binding Path=fourth_char, StringFormat='Четвертая характеристика: {0}'}" TextColor="Black" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+            <Label Text="{Binding Path=fifth_char, StringFormat='Пятая характеристика: {0}'}" TextColor="Black" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+            </StackLayout>
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="3" Margin="0" Padding="0" OutlineColor="White">
+        </Frame>
+        
+        <Frame Grid.Column="0" Grid.Row="11" Grid.ColumnSpan="3" Margin="0" Padding="0" OutlineColor="White">
+            <Label Text="{Binding Path=money, StringFormat='Деньги: {0}$'}" TextColor="Green" 
+                   VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+        </Frame>
+    </Grid>
+
+</ContentPage>

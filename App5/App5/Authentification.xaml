@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App5.Authentification">
+    <Grid ColumnSpacing="-3" RowSpacing="-3">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Frame Grid.Column="0" Grid.Row="0" >
+
+        </Frame>
+
+        <Frame Grid.Column="0" Grid.Row="1">
+            <Entry x:Name="loginEntry" 
+                       Placeholder="Login"/>
+        </Frame>
+
+
+        <Frame Grid.Column="0" Grid.Row="2">
+            <Entry x:Name="passEntry" 
+                       Placeholder="Password" IsPassword="True"/>
+        </Frame>
+
+
+        <Frame Grid.Column="0" Grid.Row="3">
+            <Button x:Name="button_auth"  Text="Авторизация" Clicked="auth_clicked" 
+                        VerticalOptions="Center" HorizontalOptions="Center"/>
+        </Frame>
+
+
+        <Frame Grid.Column="0" Grid.Row="4" >
+
+        </Frame>
+    </Grid>
+
+
+</ContentPage>

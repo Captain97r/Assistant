@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:App5"
+             x:Class="App5.AddItems.Ammo"
+             Title="Патроны">
+    <ContentPage.Content>
+        <ScrollView VerticalOptions="FillAndExpand">
+            <ListView x:Name="weapon_list"
+              HasUnevenRows="True"
+              ItemsSource="{Binding Items}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:ExtendedViewCell Height="50" SelectedBackgroundColor="Blue">
+                            <RelativeLayout>
+                                <Label x:Name="name" Text="{Binding caliber}" FontSize="18" TextColor="Black"
+                                        RelativeLayout.XConstraint = "{ConstraintExpression Type=RelativeToParent,
+                                        Property=Width, Factor=0, Constant=40}"
+                                        RelativeLayout.YConstraint = "{ConstraintExpression Type=RelativeToParent, 
+                                        Property=Height, Factor=0, Constant=15}"/>
+                            </RelativeLayout>
+                        </local:ExtendedViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

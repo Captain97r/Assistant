@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App5.HUD"
+             Title="HUD">
+    <ContentPage.Content>
+        <StackLayout Margin="5,5,5,5">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="60"/>
+            </Grid.RowDefinitions>
+
+            <Frame Grid.Column="0" Grid.Row="0" Grid.RowSpan="6">
+                    <Image Source="{Binding Path=[weapon1].image}" AutomationId="weapon1" Scale="2.8" Rotation="270"/>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+            
+            <Frame Grid.Column="2" Grid.Row="0" Grid.RowSpan="6">
+                    <Image Source="{Binding Path=[weapon2].image}" AutomationId="weapon2" Scale="2.8" Rotation="270"/>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+            <Frame Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+                    <Image Source="{Binding Path=[helmet].image}" AutomationId="helmet" />
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+            <Frame Grid.Column="1" Grid.Row="2" Grid.RowSpan="3">
+                    <Image Source="{Binding Path=[armor].image}" AutomationId="armor" />
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+            <Frame Grid.Column="1" Grid.Row="5">
+                    <Image Source="{Binding Path=[boots].image}" AutomationId="boots" />
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+            </Grid.RowDefinitions>
+
+            <Frame Grid.Column="0" Grid.Row="0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+            <Frame Grid.Column="1" Grid.Row="0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+            <Frame Grid.Column="2" Grid.Row="0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+            <Frame Grid.Column="3" Grid.Row="0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+        </Grid>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+            </Grid.RowDefinitions>
+
+            <Frame Grid.Column="0" Grid.Row="0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+            <Frame Grid.Column="1" Grid.Row="0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+            <Frame Grid.Column="2" Grid.Row="0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+            <Frame Grid.Column="3" Grid.Row="0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+            
+            <Frame Grid.Column="4" Grid.Row="0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnItem_Clicked"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+        </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
