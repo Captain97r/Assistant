@@ -2,11 +2,12 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="App5.EditUserChars"
+             xmlns:local="clr-namespace:App5"
              Title="Характеристики">
     <ContentPage.Content>
         <ScrollView>
             <StackLayout>
-                <Label Text="Быстрые действия: " HorizontalTextAlignment="Center" FontSize="18"/>
+                <Label Text="Быстрые действия: " HorizontalTextAlignment="Center" FontSize="18" Margin="0, 20, 0, 30"/>
 
                 <Button x:Name="aliveStatusButton" Text="Убить/воскресить" Clicked="isAliveChange_Clicked"/>
 
@@ -18,31 +19,66 @@
 
                 <Button x:Name="anomalyButton" Text="Попадание в аномалию" Clicked="Anomaly_Clicked"/>
 
-                <Label Text="Характеристики игрока: " HorizontalTextAlignment="Center" FontSize="18"/>
+                <BoxView Margin="8, 30 , 8 , 30" HeightRequest="1" Color="LightGray"/>
 
-                <Label x:Name="hp" Text="Slider" Margin="15, 0 , 0 , 0" FontSize="17" TextColor="Black" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
-                <Slider x:Name="sliderHp" Minimum="0" Maximum="100" Value="{Binding Path=hp}" ValueChanged="OnHpChanged" />
+                <Label Text="Характеристики игрока: " HorizontalTextAlignment="Center" FontSize="18" Margin="0, 0, 0, 30"/>
 
-                <Label x:Name="rad" Text="Slider" Margin="15, 0 , 0 , 0" FontSize="17" TextColor="Black" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
+                <Label x:Name="hp" Text="Радиация: 0" Margin="15, 0 , 0 , 0" FontSize="17" TextColor="Black" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
+                <Slider x:Name="sliderHp" Minimum="0" Value="{Binding Path=hp}" ValueChanged="OnHpChanged" />
+
+                <Label x:Name="rad" Text="Здоровье: 0" Margin="15, 0 , 0 , 0" FontSize="17" TextColor="Black" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
                 <Slider x:Name="sliderRad" Minimum="0" Maximum="100" Value="{Binding Path=radiation}" ValueChanged="OnRadChanged" />
 
-                <Label x:Name="hunger" Text="Slider" Margin="15, 0 , 0 , 0" FontSize="17" TextColor="Black" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
+                <Label x:Name="hunger" Text="Голод: 0" Margin="15, 0 , 0 , 0" FontSize="17" TextColor="Black" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"/>
                 <Slider x:Name="sliderHunger" Minimum="0" Maximum="100" Value="{Binding Path=hunger}" ValueChanged="OnHungerChanged" />
 
+                <BoxView Margin="8, 30 , 8 , 30" HeightRequest="1" Color="LightGray"/>
+                
                 <Label Text="{Binding Path=isAlive, StringFormat='Состояние: {0}'}" TextColor="Black" 
                    VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
-                <Label Text="{Binding Path=money, StringFormat='Деньги: {0}'}" TextColor="Black" 
-                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
-                <Label Text="{Binding Path=first_char, StringFormat='Первая характеристика: {0}'}" TextColor="Black" 
-                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
-                <Label Text="{Binding Path=second_char, StringFormat='Вторая характеристика: {0}'}" TextColor="Black" 
-                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
-                <Label Text="{Binding Path=third_char, StringFormat='Третья характеристика: {0}'}" TextColor="Black" 
-                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
-                <Label Text="{Binding Path=fourth_char, StringFormat='Четвертая характеристика: {0}'}" TextColor="Black" 
-                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
-                <Label Text="{Binding Path=fifth_char, StringFormat='Пятая характеристика: {0}'}" TextColor="Black" 
-                   VerticalTextAlignment="Center" HorizontalTextAlignment="Start" Margin="15, 0 , 0 , 0" FontSize="17"/>
+
+                <Entry x:Name="money" Text="{Binding Path=money}"/>
+
+                <BoxView Margin="8, 30 , 8 , 30" HeightRequest="1" Color="LightGray"/>
+                
+                <local:MyStepper x:Name="st" HeightRequest="50"
+                        Name="Выносливость"
+                        Value="{Binding stamina}"/>
+                <local:MyStepper x:Name="ag" HeightRequest="50"
+                        Name="Ловкость"
+                        Value="{Binding agility}"/>
+                <local:MyStepper x:Name="i" HeightRequest="50"
+                        Name="Интеллект"
+                        Value="{Binding intelligence}"/>
+                <local:MyStepper x:Name="ch" HeightRequest="50"
+                        Name="Харизма"
+                        Value="{Binding charisma}"/>
+                <local:MyStepper x:Name="free" HeightRequest="50"
+                        Name="Свободные очки"
+                        Value="{Binding free_points}"/>
+
+                <BoxView Margin="8, 30 , 8 , 30" HeightRequest="1" Color="LightGray"/>
+
+                <local:MyStepper x:Name="hand" HeightRequest="50"
+                        Name="Пистолет"
+                        Value="{Binding hand_p}"/>
+                <local:MyStepper x:Name="sub" HeightRequest="50"
+                        Name="Пистолет-пулемет"
+                        Value="{Binding sub_p}"/>
+                <local:MyStepper x:Name="shot" HeightRequest="50"
+                        Name="Дробовик"
+                        Value="{Binding shot_p}"/>
+                <local:MyStepper x:Name="rifle" HeightRequest="50"
+                        Name="Винтовка"
+                        Value="{Binding rifle_p}"/>
+                <local:MyStepper x:Name="assault" HeightRequest="50"
+                        Name="Автомат"
+                        Value="{Binding assault_p}"/>
+                <local:MyStepper x:Name="sniper" HeightRequest="55"
+                        Name="Снайперская винтовка"
+                        Value="{Binding sniper_p}"/>
+
+                <BoxView Margin="8, 30 , 8 , 30" HeightRequest="1" Color="LightGray"/>
 
                 <Button x:Name="applyButton" Text="Применить" Clicked="Apply_Clicked"/>
             </StackLayout>

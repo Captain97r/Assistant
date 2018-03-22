@@ -51,14 +51,19 @@ namespace App5
 
         private async Task DownloadInventoryItems(Player player, bool isReBuild)                                                                //main drawing item grid method
         {
-            InventoryItems itemList = await GetInventory(player.weapon_ids, player.ammo_ids);
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                UserDialogs.Instance.ShowLoading("Загрузка...");
+                InventoryItems itemList = await GetInventory(player.weapon_ids, player.ammo_ids);
             
-            List<Uri> uriList = await GetImages(itemList);
+                List<Uri> uriList = await GetImages(itemList);
             
-            int num = uriList.Count;
-            int column_num = 3;
+                int num = uriList.Count;
+                int column_num = 3;
 
-            CreateGrid(num, column_num, itemList, uriList, isReBuild);
+                CreateGrid(num, column_num, itemList, uriList, isReBuild);
+                UserDialogs.Instance.HideLoading();
+            });
         }
 
         private Task<InventoryItems> GetInventory(string weapons, string ammo)                                                                  //getting item info for every single one for user
@@ -189,20 +194,136 @@ namespace App5
 
             foreach (Item item in items.item)
             {
-                if (String.Equals(id, item.id) && ((Convert.ToInt32(id) < 100) || (Convert.ToInt32(id) > 200)))
-                {
-                    string action = await DisplayActionSheet(item.name + "\r\n", "Отмена", null, "Надеть", "Выбросить", "Информация");
-                    ItemAction(action, item);
-                    break;
-                }
-                else if (String.Equals(id, item.id) && ((Convert.ToInt32(id) > 100 && Convert.ToInt32(id) < 200)))
+                if (String.Equals(id, item.id) && (GetItemType(item) == itemType.ammo))
                 {
                     string action = await DisplayActionSheet(item.caliber + "x" + item.case_length + " (" + item.features + ")\r\n", "Отмена", null, "\r\nВыбросить", "Информация");
-                    ItemAction(action, item);
+                    ItemTypeDefinitor(action, item, item.id);
+                    break;
+                }
+                else if (String.Equals(id, item.id))
+                {
+                    string action = await DisplayActionSheet(item.name + "\r\n", "Отмена", null, "Надеть", "Выбросить", "Информация");
+                    ItemTypeDefinitor(action, item, item.id);
                     break;
                 }
             }
         }
+        
+
+        private async void ItemTypeDefinitor(string action, Item item, string id)
+        {
+            switch(action)
+            {
+                case "Надеть":
+                    UserDialogs.Instance.ShowLoading("Надеваем...");
+                    switch (GetItemType(item))
+                    {
+                        case itemType.weapon:
+
+                            if (String.Equals(Player.active_weapon1, ""))
+                            {
+                                Player.active_weapon1 = id;
+                            }
+                            else if (String.Equals(Player.active_weapon2, ""))
+                            {
+                                Player.active_weapon2 = id;
+                            }
+                            else
+                            {
+                                await DisplayAlert("Ошибка", "Некуда ебать ложить!", "Иди нахуй");
+                                UserDialogs.Instance.HideLoading();
+                                break;
+                            }
+                            Player.weapon_ids = NewItemAction(action, Player.weapon_ids, id);
+                            await RefreshPlayer();
+                            await DownloadInventoryItems(Player, true);
+                            UserDialogs.Instance.HideLoading();
+                            break;
+                            /*
+                        case itemType.helmet:
+                            UserDialogs.Instance.ShowLoading("Надеваем...");
+                            await RefreshPlayer();
+                            await DownloadInventoryItems(Player, true);
+                            Player.armor_ids = NewItemAction(action, Player.armor_ids, id);
+                            UserDialogs.Instance.HideLoading();
+                            break;
+                        case itemType.armor:
+                            UserDialogs.Instance.ShowLoading("Надеваем...");
+                            await RefreshPlayer();
+                            await DownloadInventoryItems(Player, true);
+                            Player.armor_ids = NewItemAction(action, Player.armor_ids, id);
+                            UserDialogs.Instance.HideLoading();
+                            break;
+                        case itemType.loot:
+                            //Player.armor_ids = newItemAction(action);
+                            break;
+                        case itemType.artifact:
+                            //Player.armor_ids = newItemAction(action);
+                            break;
+                            */
+                    }
+                    break;
+                case "Выбросить":
+                    UserDialogs.Instance.ShowLoading("Кидаем подальше...");
+                    switch (GetItemType(item))
+                    {
+                        case itemType.weapon:
+                            Player.weapon_ids = NewItemAction(action, Player.weapon_ids, id);
+                            await RefreshPlayer();
+                            await DownloadInventoryItems(Player, true);
+                            UserDialogs.Instance.HideLoading();
+                            break;
+                            /*
+                        case itemType.helmet:
+                            UserDialogs.Instance.ShowLoading("Кидаем подальше...");
+                            Player.armor_ids = NewItemAction(action, Player.armor_ids, id);
+                            await RefreshPlayer();
+                            await DownloadInventoryItems(Player, true);
+                            UserDialogs.Instance.HideLoading();
+                            break;
+                        case itemType.armor:
+                            UserDialogs.Instance.ShowLoading("Кидаем подальше...");
+                            Player.armor_ids = NewItemAction(action, Player.armor_ids, id);
+                            await RefreshPlayer();
+                            await DownloadInventoryItems(Player, true);
+                            UserDialogs.Instance.HideLoading();
+                            break;
+                        case itemType.loot:
+                            //Player.armor_ids = newItemAction(action);
+                            break;
+                        case itemType.artifact:
+                            //Player.armor_ids = newItemAction(action);
+                            break;
+                            */
+                    }
+                    break;
+                case "Информация":
+                    if (Convert.ToInt32(item.id) < 100)
+                        await DisplayAlert("Информация", "Название: " + item.name + "\r\nТип: " + item.type + "\r\nСтрана: " + item.country + "\r\nКалибр: " + item.caliber + "x" + item.case_length + "\r\nТочность: " + Convert.ToDouble(item.accuracy) * 100 + "%\r\nУрон: " + item.damage + "\r\nСтоимость: " + item.cost, "ОК");
+                    if (Convert.ToInt32(item.id) > 100)
+                    {
+                        if (!String.Equals(item.features, "")) await DisplayAlert("Информация", "Калибр: " + item.caliber + "x" + item.case_length + " (" + item.features + ")\r\nБронепробитие (класс брони): " + item.penetration_class, "ОК");
+                        else await DisplayAlert("Информация", "Калибр: " + item.caliber + "x" + item.case_length + "\r\nБронепробитие (класс брони): " + item.penetration_class, "ОК");
+                    }
+                    break;
+            }
+            
+        }
+
+        
+        private itemType GetItemType(Item item)
+        {
+            switch (Convert.ToInt32(item.id) / 100)
+            {
+                case 0:
+                    return itemType.weapon;
+                case 1:
+                    return itemType.ammo;
+                default:
+                    return itemType.unknown;
+            }
+        }
+
 
         private async void ItemAction(string action, Item item)                                                                                 //menu for each item
         {
@@ -326,5 +447,29 @@ namespace App5
         }
 
 
+        private string NewItemAction(string action, string str, string id)
+        {
+            if (str.IndexOf(";") == -1)
+            {
+                if (str.Length == 1 || str.Length == 2 || str.Length == 3) str = "";
+            }
+            else
+            {
+                str = str.Substring(0, str.IndexOf(id)) + str.Substring(str.IndexOf(id) + (id).Length);
+                if (str.IndexOf(";;") != -1)
+                {
+                    str = str.Substring(0, str.IndexOf(";;")) + str.Substring(str.IndexOf(";;") + 1);
+                }
+                if ((String.Equals(str.Substring(0, 1), ";")))
+                {
+                    str = str.Substring(1);
+                }
+                if ((String.Equals(str.Substring(str.Length - 1, 1), ";")))
+                {
+                    str = str.Substring(0, str.Length - 1);
+                }
+            }
+            return str;
+        }
     }
 }

@@ -53,7 +53,7 @@ namespace App5
              {
                  JSON json = new JSON() { type = "authentification", login = loginEntry.Text, pass = passEntry.Text };
                  string serialized = Newtonsoft.Json.JsonConvert.SerializeObject(json);
-                 return Methods.Auth(serialized);
+                 return Methods.Auth(serialized, actionType.auth);
              });
         }
 

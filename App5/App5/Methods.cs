@@ -7,20 +7,24 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Xamarin.Forms;
+using System.Net.Http;
 
 namespace App5
 {
 
     public enum rights { user, admin }
+    public enum actionType { reg, auth}
+    public enum itemType { weapon, ammo, helmet, armor, boots, loot, artifact, unknown}
 
     class Methods
     {
 
         public static string cookie;
         public static string server_address = "http://myfuckingserver.ddns.net/";
-        //public const string server_address = "http://192.168.100.106/";
+        //public const string server_address = "http://192.168.1.2/";
 
-        public static string Auth(string s)
+        public static string Auth(string s, actionType type)
         {
 
             System.Security.Cryptography.AesCryptoServiceProvider AES = new System.Security.Cryptography.AesCryptoServiceProvider();
@@ -39,7 +43,9 @@ namespace App5
             sendStream.Close();
 
             resp = req.GetResponse();
-            cookie = resp.Headers["Set-Cookie"];
+
+            if (type == actionType.auth)
+                cookie = resp.Headers["Set-Cookie"];
 
             Stream ReceiveStream = resp.GetResponseStream();
             StreamReader sr = new StreamReader(ReceiveStream, Encoding.UTF8);
@@ -58,85 +64,6 @@ namespace App5
             return Out;
         }
         
-        public static string Reg(string s)                                                                          //just because without cookies
-        {
-
-            ServicePointManager.ServerCertificateValidationCallback +=
-           delegate (object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-                                   System.Security.Cryptography.X509Certificates.X509Chain chain,
-                                   System.Net.Security.SslPolicyErrors sslPolicyErrors)
-           {
-               return true; // **** Always accept
-           };
-
-
-            WebRequest req = WebRequest.Create(server_address + "server/web/log");
-            req.Method = "POST";
-            req.ContentType = "application/json";
-            WebResponse resp;
-
-            byte[] sentData = Encoding.GetEncoding(1251).GetBytes(s);
-            req.ContentLength = sentData.Length;
-            Stream sendStream = req.GetRequestStream();
-            sendStream.Write(sentData, 0, sentData.Length);
-            sendStream.Close();
-
-            resp = req.GetResponse();
-
-            Stream ReceiveStream = resp.GetResponseStream();
-            StreamReader sr = new StreamReader(ReceiveStream, Encoding.UTF8);
-
-            Char[] read = new Char[256];
-            int count = sr.Read(read, 0, 256);
-
-            string Out = String.Empty;
-
-            while (count > 0)
-            {
-                String str = new String(read, 0, count);
-                Out += str;
-                count = sr.Read(read, 0, 256);
-            }
-            return Out;
-        }
-        
-        public static string GetProperty(string property_name)
-        {
-
-            ServicePointManager.ServerCertificateValidationCallback +=
-           delegate (object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate,
-                                   System.Security.Cryptography.X509Certificates.X509Chain chain,
-                                   System.Net.Security.SslPolicyErrors sslPolicyErrors)
-           {
-               return true; // **** Always accept
-           };
-
-
-            string url = server_address + "server/web/" + property_name;
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-            req.Headers.Add(HttpRequestHeader.Cookie, Methods.cookie);
-            req.AllowAutoRedirect = false;
-            req.Method = "GET";
-            HttpWebResponse resp;
-            resp = (HttpWebResponse)req.GetResponse();
-
-            Stream ReceiveStream = resp.GetResponseStream();
-            StreamReader sr = new StreamReader(ReceiveStream, Encoding.UTF8);
-
-            Char[] read = new Char[256];
-            int count = sr.Read(read, 0, 256);
-
-            string Out = String.Empty;
-
-            while (count > 0)
-            {
-                String str = new String(read, 0, count);
-                Out += str;
-                count = sr.Read(read, 0, 256);
-            }
-            return Out;
-        }
-
         public static string POST_request(string post, string path, string room = "")
         {
             ServicePointManager.ServerCertificateValidationCallback +=
@@ -269,16 +196,64 @@ namespace App5
                 return true; // **** Always accept
            };
 
+                //var httpClient = new HttpClient(new NativeMessageHandler());
+
+                string url = server_address + "server/socket/get-user-info";
+                WebRequest req = WebRequest.Create(url);
+                req.Headers.Add(HttpRequestHeader.Cookie, Methods.cookie);
+                req.Method = "POST";
+                req.ContentType = "application/json";
+                WebResponse resp = null;
+
+                byte[] sentData = Encoding.GetEncoding(65001).GetBytes(post);
+                req.ContentLength = sentData.Length;
+                Stream sendStream = req.GetRequestStream();
+                sendStream.Write(sentData, 0, sentData.Length);
+                sendStream.Close();
+
+                try { resp = req.GetResponse(); }
+                catch (System.Net.WebException e)
+                {
+                    return null;
+                }
+                
+                Stream ReceiveStream = resp.GetResponseStream();
+                StreamReader sr = new StreamReader(ReceiveStream, Encoding.UTF8);
+
+                Char[] read = new Char[256];
+                int count = sr.Read(read, 0, 256);
+
+                string Out = String.Empty;
+
+                while (count > 0)
+                {
+                    String str = new String(read, 0, count);
+                    Out += str;
+                    count = sr.Read(read, 0, 256);
+                }
+                return Out;
+        }
+        
+        /*
+
+        public static string Reg(string s)                                                                          //just because without cookies
+        {
+
+            ServicePointManager.ServerCertificateValidationCallback +=
+           delegate (object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate,
+                                   System.Security.Cryptography.X509Certificates.X509Chain chain,
+                                   System.Net.Security.SslPolicyErrors sslPolicyErrors)
+           {
+               return true; // **** Always accept
+           };
 
 
-            string url = server_address + "server/socket/get-user-info";
-            WebRequest req = WebRequest.Create(url);
-            req.Headers.Add(HttpRequestHeader.Cookie, Methods.cookie);
+            WebRequest req = WebRequest.Create(server_address + "server/web/log");
             req.Method = "POST";
             req.ContentType = "application/json";
             WebResponse resp;
 
-            byte[] sentData = Encoding.GetEncoding(1251).GetBytes(post);
+            byte[] sentData = Encoding.GetEncoding(1251).GetBytes(s);
             req.ContentLength = sentData.Length;
             Stream sendStream = req.GetRequestStream();
             sendStream.Write(sentData, 0, sentData.Length);
@@ -302,8 +277,52 @@ namespace App5
             }
             return Out;
         }
+
+            */
+
+        /*
+
+        public static string GetProperty(string property_name)
+        {
+
+            ServicePointManager.ServerCertificateValidationCallback +=
+           delegate (object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate,
+                                   System.Security.Cryptography.X509Certificates.X509Chain chain,
+                                   System.Net.Security.SslPolicyErrors sslPolicyErrors)
+           {
+               return true; // **** Always accept
+           };
+
+
+            string url = server_address + "server/web/" + property_name;
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+            req.Headers.Add(HttpRequestHeader.Cookie, Methods.cookie);
+            req.AllowAutoRedirect = false;
+            req.Method = "GET";
+            HttpWebResponse resp;
+            resp = (HttpWebResponse)req.GetResponse();
+
+            Stream ReceiveStream = resp.GetResponseStream();
+            StreamReader sr = new StreamReader(ReceiveStream, Encoding.UTF8);
+
+            Char[] read = new Char[256];
+            int count = sr.Read(read, 0, 256);
+
+            string Out = String.Empty;
+
+            while (count > 0)
+            {
+                String str = new String(read, 0, count);
+                Out += str;
+                count = sr.Read(read, 0, 256);
+            }
+            return Out;
+        }
+
+        */
+
     }
-    
+
     public class Item : INotifyPropertyChanged
     {
         private string _id;
@@ -560,7 +579,8 @@ namespace App5
         private string _drought;
         private string _radiation;
         private string _money;
-        private bool _isAlive;
+        private string _isAlive;
+        private string _isBleeding;
 
         private string _weapon_ids;
         private string _ammo_ids;
@@ -572,11 +592,20 @@ namespace App5
         private string _active_weapon1;
         private string _active_weapon2;
 
-        private string _first_char;
-        private string _second_char;
-        private string _third_char;
-        private string _fourth_char;
+        private string _stamina;
+        private string _agility;
+        private string _intelligence;
+        private string _charisma;
         private string _fifth_char;
+
+        private string _hand_p;
+        private string _sub_p;
+        private string _shot_p;
+        private string _rifle_p;
+        private string _assault_p;
+        private string _sniper_p;
+
+        private string _free_points;
 
         public string id
         {
@@ -662,15 +691,42 @@ namespace App5
                 }
             }
         }
+        
+        /*
         public string isAlive
         {
-            get { return _isAlive ? "Жив" : "Мертв"; ; }
+            get { return _isAlive ? "Жив" : "Мертв"; }
             set
             {
                 if (_isAlive != Convert.ToBoolean(value))
                 {
                     _isAlive = Convert.ToBoolean(value);
                     OnPropertyChanged("isAlive");
+                }
+            }
+        }
+        */
+        public string isAlive
+        {
+            get { return (Convert.ToInt32(_hp) > 0) ? "1" : "0"; }
+            set
+            {
+                if (_isAlive != value)
+                {
+                    _isAlive = value;
+                    OnPropertyChanged("isAlive");
+                }
+            }
+        }
+        public string isBleeding
+        {
+            get { return (Convert.ToInt32(_isBleeding) > 0) ? "1" : "0"; }
+            set
+            {
+                if (_isBleeding != value)
+                {
+                    _isBleeding = value;
+                    OnPropertyChanged("isBleeding");
                 }
             }
         }
@@ -774,51 +830,51 @@ namespace App5
         }
 
 
-        public string first_char
+        public string stamina
         {
-            get { return _first_char; }
+            get { return _stamina; }
             set
             {
-                if (_first_char != value)
+                if (_stamina != value)
                 {
-                    _first_char = value;
-                    OnPropertyChanged("first_char");
+                    _stamina = value;
+                    OnPropertyChanged("stamina");
                 }
             }
         }
-        public string second_char
+        public string agility
         {
-            get { return _second_char; }
+            get { return _agility; }
             set
             {
-                if (_second_char != value)
+                if (_agility != value)
                 {
-                    _second_char = value;
-                    OnPropertyChanged("second_char");
+                    _agility = value;
+                    OnPropertyChanged("agility");
                 }
             }
         }
-        public string third_char
+        public string intelligence
         {
-            get { return _third_char; }
+            get { return _intelligence; }
             set
             {
-                if (_third_char != value)
+                if (_intelligence != value)
                 {
-                    _third_char = value;
-                    OnPropertyChanged("third_char");
+                    _intelligence = value;
+                    OnPropertyChanged("intelligence");
                 }
             }
         }
-        public string fourth_char
+        public string charisma
         {
-            get { return _fourth_char; }
+            get { return _charisma; }
             set
             {
-                if (_fourth_char != value)
+                if (_charisma != value)
                 {
-                    _fourth_char = value;
-                    OnPropertyChanged("fourth_char");
+                    _charisma = value;
+                    OnPropertyChanged("charisma");
                 }
             }
         }
@@ -834,7 +890,93 @@ namespace App5
                 }
             }
         }
-        
+
+
+        public string hand_p
+        {
+            get { return _hand_p; }
+            set
+            {
+                if (_hand_p != value)
+                {
+                    _hand_p = value;
+                    OnPropertyChanged("hand_p");
+                }
+            }
+        }
+        public string sub_p
+        {
+            get { return _sub_p; }
+            set
+            {
+                if (_sub_p != value)
+                {
+                    _sub_p = value;
+                    OnPropertyChanged("sub_p");
+                }
+            }
+        }
+        public string shot_p
+        {
+            get { return _shot_p; }
+            set
+            {
+                if (_shot_p != value)
+                {
+                    _shot_p = value;
+                    OnPropertyChanged("shot_p");
+                }
+            }
+        }
+        public string rifle_p
+        {
+            get { return _rifle_p; }
+            set
+            {
+                if (_rifle_p != value)
+                {
+                    _rifle_p = value;
+                    OnPropertyChanged("rifle_p");
+                }
+            }
+        }
+        public string assault_p
+        {
+            get { return _assault_p; }
+            set
+            {
+                if (_assault_p != value)
+                {
+                    _assault_p = value;
+                    OnPropertyChanged("assault_p");
+                }
+            }
+        }
+        public string sniper_p
+        {
+            get { return _sniper_p; }
+            set
+            {
+                if (_sniper_p != value)
+                {
+                    _sniper_p = value;
+                    OnPropertyChanged("sniper_p");
+                }
+            }
+        }
+
+        public string free_points
+        {
+            get { return _free_points; }
+            set
+            {
+                if (_free_points != value)
+                {
+                    _free_points = value;
+                    OnPropertyChanged("free_points");
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string prop = "")

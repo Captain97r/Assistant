@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace App5
         public Player Player { get; set; }
         public string room;
         public Dictionary<string, Item> ImageList { get; set; }
+        Dictionary<string, Item> active_items { get; set; }
         //public static ActiveItemsReq idList { get; set; }
 
         public static InventoryItems items;
@@ -27,45 +29,92 @@ namespace App5
             Player = player;
             room = _room;
 
-            Dictionary<string, Item> active_items = GetActiveItems(Player);
+            active_items = GetActiveItems(Player);
             ImageList = active_items;
 
             //idList = new ActiveItemsReq() { helmet_id = player.active_helmet, armor_id = player.active_armor, boots_id = player.active_boots, weapon1_id = player.active_weapon1, weapon2_id = player.active_weapon2 };
 
             this.BindingContext = ImageList;
 
+            Player.PropertyChanged += new PropertyChangedEventHandler(Rebuild);
+
             InitializeComponent();
+        }
+
+        private async void Rebuild(object sender, PropertyChangedEventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await RefillFields();
+            });
+        }
+
+        private async Task RefillFields()
+        {
+            UserDialogs.Instance.ShowLoading("Обновление...");
+            await Refresh();
+
+            try { if (ImageList.ContainsKey("weapon1")) { weapon1_frame.Content = new Image() { Source = ImageSource.FromUri(new Uri(ImageList["weapon1"].image)), Rotation = 270, AutomationId= "weapon1", Scale = 1.5 }; } } catch(NullReferenceException) {  } catch (KeyNotFoundException) { weapon1_frame.Content = null; }
+            try { if (ImageList.ContainsKey("weapon2")) { weapon2_frame.Content = new Image() { Source = ImageSource.FromUri(new Uri(ImageList["weapon2"].image)), Rotation = 270, AutomationId = "weapon2", Scale = 1.5 }; }  } catch (NullReferenceException) {  } catch (KeyNotFoundException) { weapon2_frame.Content = null; }
+            try { if (ImageList.ContainsKey("helmet")) {helmet_frame.Content = new Image() { Source = ImageSource.FromUri(new Uri(ImageList["helmet"].image)), Rotation = 270, AutomationId = "helmet", Scale = 1.5 }; }  } catch(NullReferenceException) {  } catch (KeyNotFoundException) { helmet_frame.Content = null; }
+            try { if (ImageList.ContainsKey("armor")) {armor_frame.Content = new Image() { Source = ImageSource.FromUri(new Uri(ImageList["armor"].image)), Rotation = 270, AutomationId = "armor", Scale = 1.5 }; }  } catch(NullReferenceException) {  } catch (KeyNotFoundException) { armor_frame.Content = null; } 
+            try { if (ImageList.ContainsKey("boots")) {boots_frame.Content = new Image() { Source = ImageSource.FromUri(new Uri(ImageList["boots"].image)), Rotation = 270, AutomationId = "boots", Scale = 1.5 }; } } catch(NullReferenceException) {  } catch (KeyNotFoundException) { boots_frame.Content = null; }
+            UserDialogs.Instance.HideLoading();
+        }
+
+        private async Task Refresh()
+        {
+                active_items = GetActiveItems(Player);
+                ImageList = active_items;
         }
 
         private async void OnItem_Clicked(object source, EventArgs e)
         {
-            Frame frame = (Frame)source;
-            Image content = (Image)frame.Content;
-            UriImageSource uri_source = (UriImageSource)content.Source;
-            Uri uri = (Uri)uri_source.Uri;
-
-            foreach (Item item in ImageList.Values)
+            try
             {
-                if (String.Equals(uri, item.image))
+                Frame frame = (Frame)source;
+                Image content = (Image)frame.Content;
+
+                if (content.Source != null)
                 {
-                    string action = await DisplayActionSheet("Действия", "Отмена", null, "Убрать в рюкзак", "Выбросить нахуй", "Информация");
-                    ItemAction(action, item, uri_source.AutomationId);
-                    break;
+                    UriImageSource uri_source = (UriImageSource)content.Source;
+                    Uri uri = (Uri)uri_source.Uri;
+
+                    foreach (Item item in ImageList.Values)
+                    {
+                        if (item != null)
+                        {
+                            if (String.Equals(uri, item.image))
+                            {
+                                string action = await DisplayActionSheet(item.name, "Отмена", null, "Убрать в рюкзак", "Выбросить нахуй", "Информация");
+                                ItemAction(action, item, content.AutomationId, frame);
+                                break;
+                            }
+                        }
+                    }
                 }
+            } 
+            catch(System.NullReferenceException)
+            {
+                await DisplayAlert ("Ты заебал", "Тут вообще-то пусто", "ОК");
             }
         }
 
-        private async void ItemAction(string action, Item item, string slot)
+        private async void ItemAction(string action, Item item, string slot, Frame frame)
         {
             switch (action)
             {
                 case "Выбросить нахуй":
                     Drop(item, slot, drop.permanently);
+
+                    //frame.Content = null;
                     break;
 
 
                 case "Убрать в рюкзак":
                     Drop(item, slot, drop.toBackpack);
+                    
+                    //frame.Content = null;
                     break;
 
 
@@ -83,57 +132,43 @@ namespace App5
             {
                 case "weapon1":
                     Player.active_weapon1 = "";
-                    if (mode == drop.permanently)
+                    if (mode == drop.toBackpack)
                         Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
-
-                    UserDialogs.Instance.ShowLoading("Добавляем...");
-                    await RefreshPlayer();
-                    UserDialogs.Instance.HideLoading();
+                    weapon1_frame.Content = null;
 
                     break;
 
                 case "weapon2":
                     Player.active_weapon2 = "";
-                    if (mode == drop.permanently)
+                    if (mode == drop.toBackpack)
                         Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
-
-                    UserDialogs.Instance.ShowLoading("Добавляем...");
-                    await RefreshPlayer();
-                    UserDialogs.Instance.HideLoading();
+                    weapon2_frame.Content = null;
 
                     break;
 
                 case "helmet":
                     Player.active_helmet = "";
-                    //if (mode == drop.permanently)
-                        //Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
-
-                    UserDialogs.Instance.ShowLoading("Добавляем...");
-                    await RefreshPlayer();
-                    UserDialogs.Instance.HideLoading();
+                    //if (mode == drop.toBackpack)
+                    //Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
 
                     break;
 
                 case "armor":
                     Player.active_armor = "";
-                    //if (mode == drop.permanently)
-                        //Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
-
-                    UserDialogs.Instance.ShowLoading("Добавляем...");
-                    await RefreshPlayer();
-                    UserDialogs.Instance.HideLoading();
+                    //if (mode == drop.toBackpack)
+                    //Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
 
                     break;
 
                 case "boots":
                     Player.active_boots = "";
-                    //if (mode == drop.permanently)
-                        //Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
+                    //if (mode == drop.toBackpack)
+                    //Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
 
-                    UserDialogs.Instance.ShowLoading("Добавляем...");
-                    await RefreshPlayer();
-                    UserDialogs.Instance.HideLoading();
-                    
+                    break;
+
+                default:
+                    await DisplayAlert("", slot, "OK");
                     break;
             }
             await RefreshPlayer();
@@ -163,7 +198,7 @@ namespace App5
                 Methods.POST_request(serialized, "update-user-info", room);
             });
         }
-
+        
 
     }
 }

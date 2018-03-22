@@ -12,12 +12,19 @@ using Xamarin.Forms.Xaml;
 using System.Diagnostics;
 using System.Net.WebSockets;
 using Newtonsoft.Json;
+using Acr.UserDialogs;
+using Rg.Plugins.Popup.Extensions;
+using System.Globalization;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations;
 
 namespace App5
 {
+    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : ContentPage
     {
         public static Player Player { get; set; }
+        FreePoints_Popup popup;
 
         MessageChanged messageChanged = new MessageChanged();
 
@@ -30,27 +37,24 @@ namespace App5
             room = _room;
             Player = _p;
 
-            req = new SocketReq() {action = "get", user = Player.id, room = _room };
+            req = new SocketReq() { action = "get", user = Player.id, room = _room };
 
             req_serialized = Newtonsoft.Json.JsonConvert.SerializeObject(req);
 
             InitializeComponent();
+
+            popup = new FreePoints_Popup(Player, room);
+            if (Convert.ToInt32(Player.free_points) > 0)
+                Navigation.PushPopupAsync(popup);
 
             this.BindingContext = Player;
 
             ListenerThread listener = new ListenerThread(req_serialized);
             //ListenSocketThread listener = new ListenSocketThread("get");
         }
-
-        private async void inventory_clicked(object sender, EventArgs e)
-        {
-            Inventory.IsEnabled = false;
-            await Navigation.PushModalAsync(new PlayerAdditionData(Player, room));
-            Inventory.IsEnabled = true;
-        }
-
+        
     }
-    
+
 
     public class MainHandler
     {
@@ -62,6 +66,7 @@ namespace App5
             MainPage.Player.drought = m.current_player.drought;
             MainPage.Player.money = m.current_player.money;
             MainPage.Player.isAlive = m.current_player.isAlive;
+            MainPage.Player.isBleeding = m.current_player.isBleeding;
 
             MainPage.Player.weapon_ids = m.current_player.weapon_ids;
             MainPage.Player.ammo_ids = m.current_player.ammo_ids;
@@ -73,11 +78,14 @@ namespace App5
             MainPage.Player.active_weapon1 = m.current_player.active_weapon1;
             MainPage.Player.active_weapon2 = m.current_player.active_weapon2;
 
-            MainPage.Player.first_char = m.current_player.first_char;
-            MainPage.Player.second_char = m.current_player.second_char;
-            MainPage.Player.third_char = m.current_player.third_char;
-            MainPage.Player.fourth_char = m.current_player.fourth_char;
-            MainPage.Player.fifth_char = m.current_player.fifth_char;
+            MainPage.Player.stamina = m.current_player.stamina;
+            MainPage.Player.agility = m.current_player.agility;
+            MainPage.Player.intelligence = m.current_player.intelligence;
+            MainPage.Player.charisma = m.current_player.charisma;
+
+            MainPage.Player.free_points = m.current_player.free_points;
+
+            //MainPage.Player.fifth_char = m.current_player.fifth_char;
 
             //if (String.Equals(App.Current.MainPage.Navigation.NavigationStack.First().Title, "Инвентарь") || String.Equals(App.Current.MainPage.Navigation.NavigationStack.First().Title, "AD"))
             //{
@@ -88,59 +96,8 @@ namespace App5
         //public static void InventoryChanged(object sender, MsgEventArgs e)
         //{
 
-       // }
-    }
-
-
-
-
-    public class Money : IMarkupExtension
-    {
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return "Деньги: " + Methods.GetProperty("money");
-        }
-    }
-
-    public class Status : IMarkupExtension
-    {
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            if (Methods.GetProperty("isAlive") == "1") return "В игре  ";
-            else return "Мертв  ";
-        }
-    }
-
-    public class HP : IMarkupExtension
-    {
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return "HP: " + Methods.GetProperty("hp");
-        }
-
-    }
-
-    public class Rad : IMarkupExtension
-    {
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return "Радиация: " + Methods.GetProperty("radiation") + " рад";
-        }
-    }
-
-    public class Hunger : IMarkupExtension
-    {
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return "Голод: " + Methods.GetProperty("hunger");
-        }
-    }
-
-    public class NickName : IMarkupExtension
-    {
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return "  Имя: " + Methods.GetProperty("name");
-        }
+        // }
     }
 }
+
+    

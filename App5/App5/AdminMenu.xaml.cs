@@ -51,7 +51,7 @@ namespace App5
 
                 await UserDialogs.Instance.AlertAsync(responce);
             }
-            button_create_room.IsEnabled = false;
+            button_create_room.IsEnabled = true;
 
         }
 
@@ -65,6 +65,10 @@ namespace App5
 
             logout_button.IsEnabled = true;
 
+        }
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
         }
     }
 }

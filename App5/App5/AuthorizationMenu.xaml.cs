@@ -35,6 +35,11 @@ namespace App5
             Reg_clicked.IsEnabled = true;
         }
 
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
+        }
+
     }
     /*
     public class Auth : IMarkupExtension

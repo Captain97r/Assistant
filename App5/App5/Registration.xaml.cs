@@ -32,7 +32,7 @@ namespace App5
 
             JSON json = new JSON() { type = "registration", login = loginEntry.Text, pass = passEntry.Text };
             string serialized = Newtonsoft.Json.JsonConvert.SerializeObject(json);
-            string responce = Methods.Reg(serialized);
+            string responce = Methods.Auth(serialized, actionType.reg);
 
             button.Text = responce;
             button.BackgroundColor = Color.Green;

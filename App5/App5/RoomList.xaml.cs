@@ -65,7 +65,7 @@ namespace App5
 
                 if ((!String.Equals(responce, "nioh")) && right == rights.user)
                 {
-                    await Navigation.PushModalAsync(new MainPage(player, selectedRoom.name));
+                    await Navigation.PushModalAsync(new PlayerAdditionData(player, selectedRoom.name));
                 }
                 else if ((!String.Equals(responce, "nioh")) && right == rights.admin)
                 {
@@ -90,6 +90,17 @@ namespace App5
             });
         }
 
+        
+        protected override bool OnBackButtonPressed()
+        {
+            if (right == rights.user) return true;
+            else
+            {
+                Navigation.PopModalAsync();
+                return true;
+            }
+
+        }
     }
     /*
     public class RoomId : IMarkupExtension

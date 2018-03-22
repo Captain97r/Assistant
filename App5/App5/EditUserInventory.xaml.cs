@@ -35,10 +35,10 @@ namespace App5
             foreach (Item item in items.item)
             {
                 if (String.Equals(item.name, null))
-                    Weapons.Add(new Item {name = item.caliber + "x" + item.case_length + " " + item.features, caliber = item.caliber, features=item.features, case_length = item.case_length, penetration_class = item.penetration_class });
+                    Weapons.Add(new Item {id = item.id, name = item.caliber + "x" + item.case_length + " " + item.features, caliber = item.caliber, features=item.features, case_length = item.case_length, penetration_class = item.penetration_class });
                 else
                 {
-                    Weapons.Add(new Item { name = item.name, caliber = item.caliber, cost = item.cost, country = item.country, accuracy = item.accuracy, damage = item.damage, type = item.type });
+                    Weapons.Add(new Item { id = item.id, name = item.name, caliber = item.caliber, cost = item.cost, country = item.country, accuracy = item.accuracy, damage = item.damage, type = item.type });
                 }
             }
 
@@ -58,7 +58,37 @@ namespace App5
                 switch(action)
                 {
                     case "Забрать :)":
-
+                        UserDialogs.Instance.ShowLoading("Обновление...");
+                        switch (GetItemType(selectedItem))
+                        {
+                            case itemType.weapon:
+                                Player.weapon_ids = NewItemAction(action, Player.weapon_ids, selectedItem.id);
+                                await RefreshPlayer();
+                                UserDialogs.Instance.HideLoading();
+                                break;
+                                /*
+                            case itemType.helmet:
+                                UserDialogs.Instance.ShowLoading("Кидаем подальше...");
+                                Player.armor_ids = NewItemAction(action, Player.armor_ids, id);
+                                await RefreshPlayer();
+                                await DownloadInventoryItems(Player, true);
+                                UserDialogs.Instance.HideLoading();
+                                break;
+                            case itemType.armor:
+                                UserDialogs.Instance.ShowLoading("Кидаем подальше...");
+                                Player.armor_ids = NewItemAction(action, Player.armor_ids, id);
+                                await RefreshPlayer();
+                                await DownloadInventoryItems(Player, true);
+                                UserDialogs.Instance.HideLoading();
+                                break;
+                            case itemType.loot:
+                                //Player.armor_ids = newItemAction(action);
+                                break;
+                            case itemType.artifact:
+                                //Player.armor_ids = newItemAction(action);
+                                break;
+                                */
+                        }
                         break;
                 }
             }
@@ -71,53 +101,42 @@ namespace App5
             Add.IsEnabled = true;
         }
 
-        private async void DropWeapon(Item item)
+        private itemType GetItemType(Item item)
         {
-            if (Player.weapon_ids.Length == 1 || Player.weapon_ids.Length == 2) Player.weapon_ids = "";
-            else
+            switch (Convert.ToInt32(item.id) / 100)
             {
-                Player.weapon_ids = Player.weapon_ids.Substring(0, Player.weapon_ids.IndexOf(item.id)) + Player.weapon_ids.Substring(Player.weapon_ids.IndexOf(item.id) + (item.id).Length);
-                if (Player.weapon_ids.IndexOf(";;") != -1)
-                {
-                    Player.weapon_ids = Player.weapon_ids.Substring(0, Player.weapon_ids.IndexOf(";;")) + Player.weapon_ids.Substring(Player.weapon_ids.IndexOf(";;") + 1);
-                }
-                if ((String.Equals(Player.weapon_ids.Substring(0, 1), ";")))
-                {
-                    Player.weapon_ids = Player.weapon_ids.Substring(1);
-                }
-                if ((String.Equals(Player.weapon_ids.Substring(Player.weapon_ids.Length - 1, 1), ";")))
-                {
-                    Player.weapon_ids = Player.weapon_ids.Substring(0, Player.weapon_ids.Length - 1);
-                }
+                case 0:
+                    return itemType.weapon;
+                case 1:
+                    return itemType.ammo;
+                default:
+                    return itemType.unknown;
             }
-            UserDialogs.Instance.ShowLoading("Забираем...");
-            await RefreshPlayer();
-            UserDialogs.Instance.HideLoading();
         }
 
-
-        private async void DropAmmo(Item item)
+        private string NewItemAction(string action, string str, string id)
         {
-            if (Player.ammo_ids.Length == 3) Player.ammo_ids = "";
+            if (str.IndexOf(";") == -1)
+            {
+                if (str.Length == 1 || str.Length == 2 || str.Length == 3) str = "";
+            }
             else
             {
-                Player.ammo_ids = Player.ammo_ids.Substring(0, Player.ammo_ids.IndexOf(item.id)) + Player.ammo_ids.Substring(Player.ammo_ids.IndexOf(item.id) + (item.id).Length);
-                if (Player.ammo_ids.IndexOf(";;") != -1)
+                str = str.Substring(0, str.IndexOf(id)) + str.Substring(str.IndexOf(id) + (id).Length);
+                if (str.IndexOf(";;") != -1)
                 {
-                    Player.ammo_ids = Player.ammo_ids.Substring(0, Player.ammo_ids.IndexOf(";;")) + Player.ammo_ids.Substring(Player.ammo_ids.IndexOf(";;") + 1);
+                    str = str.Substring(0, str.IndexOf(";;")) + str.Substring(str.IndexOf(";;") + 1);
                 }
-                if ((String.Equals(Player.ammo_ids.Substring(0, 1), ";")))
+                if ((String.Equals(str.Substring(0, 1), ";")))
                 {
-                    Player.ammo_ids = Player.ammo_ids.Substring(1);
+                    str = str.Substring(1);
                 }
-                if ((String.Equals(Player.ammo_ids.Substring(Player.ammo_ids.Length - 1, 1), ";")))
+                if ((String.Equals(str.Substring(str.Length - 1, 1), ";")))
                 {
-                    Player.ammo_ids = Player.ammo_ids.Substring(0, Player.ammo_ids.Length - 1);
+                    str = str.Substring(0, str.Length - 1);
                 }
             }
-            UserDialogs.Instance.ShowLoading("Забираем...");
-            await RefreshPlayer();
-            UserDialogs.Instance.HideLoading();
+            return str;
         }
 
 

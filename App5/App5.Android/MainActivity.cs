@@ -20,7 +20,7 @@ namespace App5.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
-
+            
             UserDialogs.Init(() => (Activity)Forms.Context);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);

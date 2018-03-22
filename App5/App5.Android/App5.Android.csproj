@@ -61,7 +61,7 @@
   <ItemGroup>
     <Reference Include="Mono.Android" />
     <Reference Include="Plugin.AutoLogin.Abstractions">
-      <HintPath>..\..\..\autologin\Plugin.AutoLogin.Abstractions.dll</HintPath>
+      <HintPath>C:\Users\capta\Desktop\portable-net45+netcore45+wpa81+wp8\Plugin.AutoLogin.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -77,6 +77,9 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>10.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Rg.Plugins.Popup">
+      <Version>1.0.4</Version>
     </PackageReference>
     <PackageReference Include="Websockets.Pcl">
       <Version>1.1.9</Version>

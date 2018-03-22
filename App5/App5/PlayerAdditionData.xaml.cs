@@ -20,6 +20,7 @@ namespace App5
             Player = player;
             room = _room;
 
+            this.Children.Add(new MainPage(player, _room));
             this.Children.Add(new Inventory(player, _room));
             this.Children.Add(new HUD(player, _room));
 

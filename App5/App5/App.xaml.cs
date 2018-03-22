@@ -21,7 +21,7 @@ namespace App5
             {
                 JSON json = new JSON() { type = "authentification", login = CrossAutoLogin.Current.UserEmail, pass = CrossAutoLogin.Current.UserPassword };
                 string serialized = Newtonsoft.Json.JsonConvert.SerializeObject(json);
-                string responce = Methods.Auth(serialized);
+                string responce = Methods.Auth(serialized, actionType.auth);
 
                 if (responce == "0")
                 {

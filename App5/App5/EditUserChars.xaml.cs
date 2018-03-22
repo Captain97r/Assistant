@@ -25,12 +25,26 @@ namespace App5
 
             InitializeComponent();
 
+            sliderHp.Maximum = 80 + Convert.ToInt32(Player.stamina) * 2;
+
             this.BindingContext = Player;
         }
 
         async void Apply_Clicked(object sender, EventArgs e)
         {
             UserDialogs.Instance.ShowLoading("Обновление...");
+            Player.stamina = st.Value;
+            Player.agility = ag.Value;
+            Player.intelligence = i.Value;
+            Player.charisma = ch.Value;
+            Player.free_points = free.Value;
+            Player.money = money.Text;
+            Player.hand_p = hand.Value;
+            Player.sub_p = sub.Value;
+            Player.shot_p = shot.Value;
+            Player.rifle_p = rifle.Value;
+            Player.assault_p = assault.Value;
+            Player.sniper_p = sniper.Value;
             await RefreshPlayer();
             UserDialogs.Instance.HideLoading();
         }
@@ -42,6 +56,7 @@ namespace App5
         async void isAliveChange_Clicked(object sender, EventArgs e)
         {
             UserDialogs.Instance.ShowLoading("Обновление...");
+            Player.hp = (Convert.ToInt32(Player.hp) > 0) ? "0" : "100";
             await RefreshPlayer();
             UserDialogs.Instance.HideLoading();
         }
@@ -123,4 +138,85 @@ namespace App5
             });
         }
     }
+
+    public class MyStepper : ContentView
+    {
+        Label name, value;
+        Button plus, minus;
+        
+        public MyStepper()
+        {
+            name = new Label { FontSize = 18, Margin = new Thickness(19, 10, 0, 0), TextColor = Color.Black };
+            value = new Label { FontSize = 18, Margin = new Thickness(19, 10, 0, 0), TextColor = Color.Black };
+            plus = new Button() { Text = "+", HorizontalOptions = LayoutOptions.Center, TextColor = Color.Black };
+            minus = new Button() { Text = "-", HorizontalOptions = LayoutOptions.Center, TextColor = Color.Black };
+            plus.Clicked += OnPlusButtonClicked;
+            minus.Clicked += OnMinusButtonClicked;
+
+            Grid grid = new Grid
+            {
+                RowDefinitions =
+                {
+                    new RowDefinition{Height = new GridLength(1, GridUnitType.Star)}
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+                },
+                ColumnSpacing = -3,
+                RowSpacing = -3
+
+            };
+            grid.Children.Add(name, 0, 0);
+            grid.Children.Add(minus, 1, 0);
+            grid.Children.Add(value, 2, 0);
+            grid.Children.Add(plus, 3, 0);
+
+            Content = grid;
+        }
+        
+        public static readonly BindableProperty NameProperty =
+            BindableProperty.Create("Name", typeof(string), typeof(ContentView), "");
+
+        public static readonly BindableProperty ValueProperty =
+            BindableProperty.Create("Value", typeof(string), typeof(ContentView), "");
+        
+        public string Name
+        {
+            get { return (string)GetValue(NameProperty); }
+            set { SetValue(NameProperty, value); }
+        }
+        public string Value
+        {
+            get { return (string)GetValue(ValueProperty); }
+            set { SetValue(ValueProperty, value); }
+        }
+
+        protected override void OnBindingContextChanged()
+        {
+            base.OnBindingContextChanged();
+
+            if (BindingContext != null)
+            {
+                name.Text = Name;
+                value.Text = Value;
+            }
+        }
+
+        void OnPlusButtonClicked(object sender, EventArgs e)
+        {
+            Value = Convert.ToString(Convert.ToInt32(Value) + 1);
+            OnBindingContextChanged();
+        }
+
+        void OnMinusButtonClicked(object sender, EventArgs e)
+        {
+            Value = Convert.ToString(Convert.ToInt32(Value) - 1);
+            OnBindingContextChanged();
+        }
+    }
+
 }
