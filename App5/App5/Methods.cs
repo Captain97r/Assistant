@@ -692,20 +692,7 @@ namespace App5
             }
         }
         
-        /*
-        public string isAlive
-        {
-            get { return _isAlive ? "Жив" : "Мертв"; }
-            set
-            {
-                if (_isAlive != Convert.ToBoolean(value))
-                {
-                    _isAlive = Convert.ToBoolean(value);
-                    OnPropertyChanged("isAlive");
-                }
-            }
-        }
-        */
+        
         public string isAlive
         {
             get { return (Convert.ToInt32(_hp) > 0) ? "1" : "0"; }
