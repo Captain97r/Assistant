@@ -60,7 +60,7 @@ namespace App5
     {
         public static void MessageEventHandler(object sender, MsgEventArgs m)
         {
-            MainPage.Player.hp = m.current_player.hp;
+            MainPage.Player.hp = Convert.ToString(Convert.ToInt32(m.current_player.hp) + Convert.ToInt32(m.current_player.stamina));
             MainPage.Player.radiation = m.current_player.radiation;
             MainPage.Player.hunger = m.current_player.hunger;
             MainPage.Player.drought = m.current_player.drought;
@@ -84,19 +84,8 @@ namespace App5
             MainPage.Player.charisma = m.current_player.charisma;
 
             MainPage.Player.free_points = m.current_player.free_points;
-
-            //MainPage.Player.fifth_char = m.current_player.fifth_char;
-
-            //if (String.Equals(App.Current.MainPage.Navigation.NavigationStack.First().Title, "Инвентарь") || String.Equals(App.Current.MainPage.Navigation.NavigationStack.First().Title, "AD"))
-            //{
-            //
-            //
+            
         }
-
-        //public static void InventoryChanged(object sender, MsgEventArgs e)
-        //{
-
-        // }
     }
 }
 

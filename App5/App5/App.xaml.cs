@@ -31,6 +31,10 @@ namespace App5
                 {
                     MainPage = new NavigationPage(new AdminMenu());
                 }
+                else if (responce == "-1")
+                {
+                    MainPage = new NavigationPage(new AuthorizationMenu());                                                 //TODO: add no internet connection exception as addition parameter
+                }
             }
             else MainPage = new NavigationPage(new AuthorizationMenu());
         }

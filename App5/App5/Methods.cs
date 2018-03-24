@@ -7,8 +7,8 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 using System.Net.Http;
+using System.Diagnostics;
 
 namespace App5
 {
@@ -31,14 +31,19 @@ namespace App5
 
             System.Net.ServicePointManager.ServerCertificateValidationCallback += (o, certificate, chain, errors) => true;
 
+
+            string Out = String.Empty;
+
             WebRequest req = WebRequest.Create(server_address + "server/web/log");
             req.Method = "POST";
             req.ContentType = "application/json";
             WebResponse resp;
 
+            try { 
+
             byte[] sentData = Encoding.GetEncoding(1251).GetBytes(s);
             req.ContentLength = sentData.Length;
-            Stream sendStream = req.GetRequestStream();
+            Stream sendStream = req.GetRequestStream();                                     //System.Net.WebException: Error: NameResolutionFailure
             sendStream.Write(sentData, 0, sentData.Length);
             sendStream.Close();
 
@@ -53,7 +58,6 @@ namespace App5
             Char[] read = new Char[256];
             int count = sr.Read(read, 0, 256);
 
-            string Out = String.Empty;
 
             while (count > 0)
             {
@@ -61,6 +65,14 @@ namespace App5
                 Out += str;
                 count = sr.Read(read, 0, 256);
             }
+            }
+            catch (System.Net.WebException e)
+            {
+                Debug.WriteLine("-1");
+                Debug.WriteLine(e.ToString());
+                return "-1";                                                                                            //TODO: rewrite error return
+            }
+
             return Out;
         }
         
@@ -79,12 +91,16 @@ namespace App5
                 post = post.Insert(1, "\"room\":\"" + room + "\",");
             }
 
+            string Out = String.Empty;
+
             string url = server_address + "server/web/" + path;
             WebRequest req = WebRequest.Create(url);
             req.Headers.Add(HttpRequestHeader.Cookie, Methods.cookie);
             req.Method = "POST";
             req.ContentType = "application/json";
             WebResponse resp;
+
+            try { 
 
             byte[] sentData = Encoding.GetEncoding(65001).GetBytes(post);
             req.ContentLength = sentData.Length;
@@ -100,7 +116,6 @@ namespace App5
             Char[] read = new Char[256];
             int count = sr.Read(read, 0, 256);
 
-            string Out = String.Empty;
 
             while (count > 0)
             {
@@ -108,6 +123,15 @@ namespace App5
                 Out += str;
                 count = sr.Read(read, 0, 256);
             }
+
+            }
+            catch (System.Net.WebException e)
+            {
+                Debug.WriteLine("-1");
+                Debug.WriteLine(e.ToString());
+                return null;                                                                                            //TODO: rewrite error return
+            }
+
             return Out;
         }
 
@@ -123,11 +147,14 @@ namespace App5
            };
 
 
+            string Out = String.Empty;
 
             string url = server_address + "server/web/" + path;
             WebRequest req = WebRequest.Create(url);
             req.Headers.Add(HttpRequestHeader.Cookie, Methods.cookie);
             req.Method = "GET";
+
+            try { 
             WebResponse resp = req.GetResponse();
 
             Stream ReceiveStream = resp.GetResponseStream();
@@ -136,13 +163,20 @@ namespace App5
             Char[] read = new Char[256];
             int count = sr.Read(read, 0, 256);
 
-            string Out = String.Empty;
 
             while (count > 0)
             {
                 String str = new String(read, 0, count);
                 Out += str;
                 count = sr.Read(read, 0, 256);
+            }
+
+            }
+            catch (System.Net.WebException e)
+            {
+                Debug.WriteLine("-1");
+                Debug.WriteLine(e.ToString());
+                return "-1";
             }
             return Out;
         }
@@ -160,10 +194,16 @@ namespace App5
            };
 
 
+
+            string Out = String.Empty;
+
             string url = server_address + "server/web/room_list";
             WebRequest req = WebRequest.Create(url);
             req.Headers.Add(HttpRequestHeader.Cookie, Methods.cookie);
             req.Method = "GET";
+
+            try
+            {
             WebResponse resp = req.GetResponse();
 
             Stream ReceiveStream = resp.GetResponseStream();
@@ -172,7 +212,6 @@ namespace App5
             Char[] read = new Char[256];
             int count = sr.Read(read, 0, 256);
 
-            string Out = String.Empty;
 
             while (count > 0)
             {
@@ -180,8 +219,16 @@ namespace App5
                 Out += str;
                 count = sr.Read(read, 0, 256);
             }
+            
+            }
+            catch (System.Net.WebException e)
+            {
+                Debug.WriteLine("-1");
+                Debug.WriteLine(e.ToString());
+                return null;                                                                                            //TODO: rewrite error return
+            }
 
-            string[] list = Out.Split('.');
+    string[] list = Out.Split('.');
 
             return list;
         }
@@ -196,7 +243,9 @@ namespace App5
                 return true; // **** Always accept
            };
 
-                //var httpClient = new HttpClient(new NativeMessageHandler());
+            //var httpClient = new HttpClient(new NativeMessageHandler());
+
+                string Out = String.Empty;
 
                 string url = server_address + "server/socket/get-user-info";
                 WebRequest req = WebRequest.Create(url);
@@ -211,27 +260,29 @@ namespace App5
                 sendStream.Write(sentData, 0, sentData.Length);
                 sendStream.Close();
 
-                try { resp = req.GetResponse(); }
-                catch (System.Net.WebException e)
-                {
-                    return null;
-                }
+                try { resp = req.GetResponse();
+                
                 
                 Stream ReceiveStream = resp.GetResponseStream();
                 StreamReader sr = new StreamReader(ReceiveStream, Encoding.UTF8);
 
                 Char[] read = new Char[256];
                 int count = sr.Read(read, 0, 256);
-
-                string Out = String.Empty;
-
+                
                 while (count > 0)
                 {
                     String str = new String(read, 0, count);
                     Out += str;
                     count = sr.Read(read, 0, 256);
                 }
-                return Out;
+            }
+            catch (System.Net.WebException e)
+            {
+                Debug.WriteLine("-1");
+                Debug.WriteLine(e.ToString());
+                return "-1";
+            }
+            return Out;
         }
         
         /*
@@ -695,12 +746,30 @@ namespace App5
         
         public string isAlive
         {
-            get { return (Convert.ToInt32(_hp) > 0) ? "1" : "0"; }
+            get
+            {
+                return _isAlive;
+            }
             set
             {
-                if (_isAlive != value)
+                if ((String.Equals(_isAlive, "") && (Convert.ToInt32(_hp) < 0)) || (String.Equals(_isAlive, null) && (Convert.ToInt32(_hp) < 0)))
                 {
-                    _isAlive = value;
+                    _isAlive = "Мертв";
+                    OnPropertyChanged("isAlive");
+                }
+                else if ((String.Equals(_isAlive, "") && (Convert.ToInt32(_hp) > 0)) || (String.Equals(_isAlive, null) && (Convert.ToInt32(_hp) < 0)))
+                {
+                    _isAlive = "В игре";
+                    OnPropertyChanged("isAlive");
+                }
+                else if ((String.Equals(_isAlive, "В игре") && (Convert.ToInt32(_hp) < 0)))
+                { 
+                    _isAlive = "Мертв";
+                    OnPropertyChanged("isAlive");
+                }
+                else  if((String.Equals(_isAlive, "Мертв") && (Convert.ToInt32(_hp) > 0)))
+                {
+                    _isAlive = "В игре";
                     OnPropertyChanged("isAlive");
                 }
             }

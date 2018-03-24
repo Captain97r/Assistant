@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Acr.UserDialogs;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -11,7 +13,7 @@ using Xamarin.Forms.Xaml;
 
 namespace App5
 {
-    class ListenerThread
+    class ListenerThread: ContentPage
     {
         public Thread listenerThrd;
 
@@ -38,18 +40,34 @@ namespace App5
 
             while (true)
             {
-                Out = Methods.ListenSocket(post);
-                cur_player = JsonConvert.DeserializeObject<Player>(Out); //System.ArgumentNullException: <Timeout exceeded getting exception details>
-
-                //string serialized = JsonConvert.SerializeObject(player);
-
-                if (Out == null) continue;
-                if (!String.Equals(Out, prev))
+                try
                 {
-                    messageChanged.OnMessageChanged(cur_player);
-                    prev = Out;
+                    Out = Methods.ListenSocket(post);
+                    if (String.Equals(Out, "-1")) continue;
+                    else cur_player = JsonConvert.DeserializeObject<Player>(Out); //System.ArgumentNullException: <Timeout exceeded getting exception details>
+
+                    //string serialized = JsonConvert.SerializeObject(player);
+
+                    if (Out == null) continue;
+                    if (!String.Equals(Out, prev))
+                    {
+                        messageChanged.OnMessageChanged(cur_player);
+                        prev = Out;
+                    }
+                    Thread.Sleep(1000);
                 }
-                Thread.Sleep(1000);
+                catch(System.Net.WebException e)
+                {
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        await DisplayAlert("Error", "Ошибка в потоке ListenerThread" + e, "OK");
+                    });
+                }
+                catch(Exception e1)
+                {
+                    Debug.WriteLine(e1);
+                }
+                //catch (System.Net.)
             }
         }
 
