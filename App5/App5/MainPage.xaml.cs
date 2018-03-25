@@ -27,6 +27,8 @@ namespace App5
         FreePoints_Popup popup;
 
         MessageChanged messageChanged = new MessageChanged();
+        CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+        CancellationToken token;
 
         SocketReq req;
         string req_serialized;
@@ -48,9 +50,16 @@ namespace App5
                 Navigation.PushPopupAsync(popup);
 
             this.BindingContext = Player;
-
-            ListenerThread listener = new ListenerThread(req_serialized);
+            
+            token = cancelTokenSource.Token;
+            ListenerThread listener = new ListenerThread(req_serialized, token);
             //ListenSocketThread listener = new ListenSocketThread("get");
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            cancelTokenSource.Cancel();
+            return false;
         }
         
     }

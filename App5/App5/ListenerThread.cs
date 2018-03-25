@@ -20,10 +20,12 @@ namespace App5
         MessageChanged messageChanged = new MessageChanged();
 
         string post;
+        CancellationToken token;
 
-        public ListenerThread(string _post)
+        public ListenerThread(string _post, CancellationToken _token)
         {
             post = _post;
+            token = _token;
 
             messageChanged.MessageHasChanged += new MessageEventHandler(MainHandler.MessageEventHandler);
             listenerThrd = new Thread(new ThreadStart(this.run));
@@ -42,6 +44,11 @@ namespace App5
             {
                 try
                 {
+                    if (token.IsCancellationRequested && listenerThrd.IsAlive)
+                    {
+                        Debug.WriteLine("Операция прервана токеном");
+                        listenerThrd.Abort();
+                    }
                     Out = Methods.ListenSocket(post);
                     if (String.Equals(Out, "-1")) continue;
                     else cur_player = JsonConvert.DeserializeObject<Player>(Out); //System.ArgumentNullException: <Timeout exceeded getting exception details>
