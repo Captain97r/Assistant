@@ -16,8 +16,9 @@ namespace App5
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AuthorizationMenu : ContentPage
     {
-        public AuthorizationMenu()
+        public AuthorizationMenu(bool isConnectionEstablised = true)
         {
+            if (!isConnectionEstablised) DisplayAlert("Error", "Подключение к Интернету отсутствует!", "OK");
             InitializeComponent();
         }
 

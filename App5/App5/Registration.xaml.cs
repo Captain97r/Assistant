@@ -36,9 +36,9 @@ namespace App5
 
             button.Text = responce;
             button.BackgroundColor = Color.Green;
-
-            await Navigation.PushModalAsync(new Authentification());
-            Reg.IsEnabled = false;
+            if (responce == "-1") await DisplayAlert("Error", "Подключение к Интернету отсутствует!", "OK");
+            else await Navigation.PushModalAsync(new Authentification());
+            Reg.IsEnabled = true;
         }
     }
 }

@@ -30,8 +30,7 @@ namespace App5
             System.Security.Cryptography.AesCryptoServiceProvider AES = new System.Security.Cryptography.AesCryptoServiceProvider();
 
             System.Net.ServicePointManager.ServerCertificateValidationCallback += (o, certificate, chain, errors) => true;
-
-
+            
             string Out = String.Empty;
 
             WebRequest req = WebRequest.Create(server_address + "server/web/log");
@@ -41,36 +40,40 @@ namespace App5
 
             try { 
 
-            byte[] sentData = Encoding.GetEncoding(1251).GetBytes(s);
-            req.ContentLength = sentData.Length;
-            Stream sendStream = req.GetRequestStream();                                     //System.Net.WebException: Error: NameResolutionFailure
-            sendStream.Write(sentData, 0, sentData.Length);
-            sendStream.Close();
+                byte[] sentData = Encoding.GetEncoding(1251).GetBytes(s);
+                req.ContentLength = sentData.Length;
+                Stream sendStream = req.GetRequestStream();                                     //System.Net.WebException: Error: NameResolutionFailure
+                sendStream.Write(sentData, 0, sentData.Length);
+                sendStream.Close();
 
-            resp = req.GetResponse();
+                resp = req.GetResponse();
 
-            if (type == actionType.auth)
-                cookie = resp.Headers["Set-Cookie"];
+                if (type == actionType.auth)
+                    cookie = resp.Headers["Set-Cookie"];
 
-            Stream ReceiveStream = resp.GetResponseStream();
-            StreamReader sr = new StreamReader(ReceiveStream, Encoding.UTF8);
+                Stream ReceiveStream = resp.GetResponseStream();
+                StreamReader sr = new StreamReader(ReceiveStream, Encoding.UTF8);
 
-            Char[] read = new Char[256];
-            int count = sr.Read(read, 0, 256);
+                Char[] read = new Char[256];
+                int count = sr.Read(read, 0, 256);
 
 
-            while (count > 0)
-            {
-                String str = new String(read, 0, count);
-                Out += str;
-                count = sr.Read(read, 0, 256);
-            }
+                while (count > 0)
+                {
+                    String str = new String(read, 0, count);
+                    Out += str;
+                    count = sr.Read(read, 0, 256);
+                }
             }
             catch (System.Net.WebException e)
             {
-                Debug.WriteLine("-1");
-                Debug.WriteLine(e.ToString());
-                return "-1";                                                                                            //TODO: rewrite error return
+                Debug.WriteLine("ReceiveError");
+                return "-1";
+            }
+            catch (System.Net.Sockets.SocketException e1)
+            {
+                Debug.WriteLine("Network is unreachable");
+                return "-1";
             }
 
             return Out;
@@ -127,9 +130,13 @@ namespace App5
             }
             catch (System.Net.WebException e)
             {
-                Debug.WriteLine("-1");
-                Debug.WriteLine(e.ToString());
-                return null;                                                                                            //TODO: rewrite error return
+                Debug.WriteLine("ReceiveError");
+                return "-1";
+            }
+            catch (System.Net.Sockets.SocketException e1)
+            {
+                Debug.WriteLine("Network is unreachable");
+                return "-1";
             }
 
             return Out;
@@ -174,8 +181,12 @@ namespace App5
             }
             catch (System.Net.WebException e)
             {
-                Debug.WriteLine("-1");
-                Debug.WriteLine(e.ToString());
+                Debug.WriteLine("ReceiveError");
+                return "-1";
+            }
+            catch (System.Net.Sockets.SocketException e1)
+            {
+                Debug.WriteLine("Network is unreachable");
                 return "-1";
             }
             return Out;
@@ -254,35 +265,41 @@ namespace App5
                 req.ContentType = "application/json";
                 WebResponse resp = null;
 
-                byte[] sentData = Encoding.GetEncoding(65001).GetBytes(post);
-                req.ContentLength = sentData.Length;
-                Stream sendStream = req.GetRequestStream();
-                sendStream.Write(sentData, 0, sentData.Length);
-                sendStream.Close();
-
-                try { resp = req.GetResponse();
-                
-                
-                Stream ReceiveStream = resp.GetResponseStream();
-                StreamReader sr = new StreamReader(ReceiveStream, Encoding.UTF8);
-
-                Char[] read = new Char[256];
-                int count = sr.Read(read, 0, 256);
-                
-                while (count > 0)
+                try
                 {
-                    String str = new String(read, 0, count);
-                    Out += str;
-                    count = sr.Read(read, 0, 256);
+                    byte[] sentData = Encoding.GetEncoding(65001).GetBytes(post);
+                    req.ContentLength = sentData.Length;
+                    Stream sendStream = req.GetRequestStream();
+                    sendStream.Write(sentData, 0, sentData.Length);
+                    sendStream.Close();
+
+                    resp = req.GetResponse();
+                
+                
+                    Stream ReceiveStream = resp.GetResponseStream();
+                    StreamReader sr = new StreamReader(ReceiveStream, Encoding.UTF8);
+
+                    Char[] read = new Char[256];
+                    int count = sr.Read(read, 0, 256);
+                
+                    while (count > 0)
+                    {
+                        String str = new String(read, 0, count);
+                        Out += str;
+                        count = sr.Read(read, 0, 256);
+                    }
                 }
-            }
-            catch (System.Net.WebException e)
-            {
-                Debug.WriteLine("-1");
-                Debug.WriteLine(e.ToString());
-                return "-1";
-            }
-            return Out;
+                catch (System.Net.WebException e)
+                {
+                    Debug.WriteLine("ReceiveError");
+                    return "-1";
+                }
+                catch (System.Net.Sockets.SocketException e1)
+                {
+                    Debug.WriteLine("Network is unreachable");
+                    return "-1";
+                }
+                return Out;
         }
         
         /*

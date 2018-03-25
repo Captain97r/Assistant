@@ -47,7 +47,7 @@ namespace App5
             logout_button.IsEnabled = false;
             CrossAutoLogin.Current.DeleteUserInfos();
             Methods.cookie = "";
-            await Navigation.PushModalAsync(new AuthorizationMenu());
+            await Navigation.PushModalAsync(new AuthorizationMenu(true));
             logout_button.IsEnabled = true;
         }
 
@@ -60,6 +60,12 @@ namespace App5
                 UserDialogs.Instance.ShowLoading("Загрузка...", MaskType.Gradient);
                 string responce = await OpenRoom(e);
                 UserDialogs.Instance.HideLoading();
+
+                if (responce == "-1")
+                {
+                    await DisplayAlert("Error", "Подключение к Интернету отсутствует!", "OK");
+                    return;
+                }
 
                 Player player = JsonConvert.DeserializeObject<Player>(responce);
 

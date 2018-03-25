@@ -58,10 +58,7 @@ namespace App5
                 }
                 catch(System.Net.WebException e)
                 {
-                    Device.BeginInvokeOnMainThread(async () =>
-                    {
-                        await DisplayAlert("Error", "Ошибка в потоке ListenerThread" + e, "OK");
-                    });
+                    Debug.WriteLine(e.ToString());
                 }
                 catch(Exception e1)
                 {

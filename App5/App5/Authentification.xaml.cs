@@ -38,6 +38,10 @@ namespace App5
             {
                 await Navigation.PushModalAsync(new AdminMenu());
             }
+            else if (responce == "-1")
+            {
+                await DisplayAlert("Error", "Подключение к Интернету отсутствует!", "OK");
+            }
             else
             {
                 await DisplayAlert("Error", responce, "OK");
