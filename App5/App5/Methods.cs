@@ -291,7 +291,7 @@ namespace App5
                 }
                 catch (System.Net.WebException e)
                 {
-                    Debug.WriteLine("ReceiveError");
+                    Debug.WriteLine("ReceiveError uu");
                     return "-1";
                 }
                 catch (System.Net.Sockets.SocketException e1)
@@ -405,6 +405,16 @@ namespace App5
         private string _features;
         private string _penetration_class;
         private string _image;
+
+        private string _groupment;
+        private string _radio_protection;
+        private string _temp_protection;
+        private string _electric_protection;
+        private string _chemic_protection;
+        private string _psy_protection;
+        private string _containers;
+        private string _PNV;
+        private string _weight;
 
         public string id
         {
@@ -607,6 +617,7 @@ namespace App5
     {
         public string weapon_ids { get; set; }
         public string ammo_ids { get; set; }
+        public string armor_ids { get; set; }
     }
     
     public class ActiveItemsReq

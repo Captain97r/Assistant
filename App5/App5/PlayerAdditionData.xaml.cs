@@ -22,7 +22,7 @@ namespace App5
 
             this.Children.Add(new MainPage(player, _room));
             this.Children.Add(new Inventory(player, _room));
-            this.Children.Add(new HUD(player, _room));
+            this.Children.Add(new HUD(player, _room)); 
 
             InitializeComponent();
 		}

@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ namespace App5
             img_grid.ColumnDefinitions = new ColumnDefinitionCollection();                                                                      //creating grid collections
             img_grid.RowDefinitions = new RowDefinitionCollection();
 
-            DownloadInventoryItems(player, false);
+            //DownloadInventoryItems(player, false);
 
         }
 
@@ -54,7 +55,7 @@ namespace App5
             Device.BeginInvokeOnMainThread(async () =>
             {
                 UserDialogs.Instance.ShowLoading("Загрузка...");
-                InventoryItems itemList = await GetInventory(player.weapon_ids, player.ammo_ids);
+                InventoryItems itemList = await GetInventory(player.weapon_ids, player.ammo_ids, player.armor_ids);
             
                 List<Uri> uriList = await GetImages(itemList);
             
@@ -66,13 +67,13 @@ namespace App5
             });
         }
 
-        private Task<InventoryItems> GetInventory(string weapons, string ammo)                                                                  //getting item info for every single one for user
+        private Task<InventoryItems> GetInventory(string weapons, string ammo, string armor)                                                                  //getting item info for every single one for user
         {
             AmmoReq req;
 
             return Task.Run(() =>
             {
-                req = new AmmoReq() { weapon_ids = weapons, ammo_ids = ammo };
+                req = new AmmoReq() { weapon_ids = weapons, ammo_ids = ammo, armor_ids = armor };
                 string post = JsonConvert.SerializeObject(req);
                 items = JsonConvert.DeserializeObject<InventoryItems>(Methods.POST_request(post, "get-inventory"));
                 return items;
@@ -110,10 +111,25 @@ namespace App5
             for (int i = 0; i < rows; i++)
                 img_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, HEIGHT) });
 
-            List<int> free_column = new List<int>();                                                                                            //array for free cells
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////     VARIABLE DEFINITIONS     /////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+            List<int> free_column = new List<int>();                                                                                            //arrays for free cells
             List<int> free_row = new List<int>() ;
+
+            List<int> busy_column = new List<int>();                                                                                            // arrays for busy cells
+            List<int> busy_row = new List<int>();
+
             int count_col = 0, count_row = 0, item_id = 0;                                                                                      //current pos x, y and current item id
             int multislot_item = 0;
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////      CREATING FRAMES     /////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
             foreach (Uri uri in uriList)                                                                                                        //building an image
             {
@@ -128,7 +144,8 @@ namespace App5
                 Frame frame = new Frame()                                                                                                       //building frames
                 {
                     Content = image,
-                    OutlineColor = Color.White
+                    OutlineColor = Color.White,
+                    HeightRequest = 20
                 };
 
                 var gestureRecognizer = new TapGestureRecognizer();                                                                             //Adding gesture recognizer for every single frame
@@ -136,10 +153,70 @@ namespace App5
 
                 frame.GestureRecognizers.Add(gestureRecognizer);
 
-                
-                if (Convert.ToInt32(itemList.item[item_id].id) > 10 && Convert.ToInt32(itemList.item[item_id].id) < 100)                        //filling grid with "long" items
+
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////////////////      ITEMS DISTRIBUTION     /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+                if (Convert.ToInt32(itemList.item[item_id].id) > 200 && Convert.ToInt32(itemList.item[item_id].id) < 300)                        //filling grid with "large" (2x3) items
                 {
-                    if (count_col == column_num-1) { free_column.Add(count_col); free_row.Add(count_row); count_col = 0; count_row++; }
+                    
+                    for (int i = 0; i < busy_row.Count; i++)
+                    {
+                        if ((busy_column[i] == count_col && busy_row[i] == count_row))
+                        {
+                            count_col++;
+                            if (count_col == column_num)
+                            {
+                                count_col = 0;
+                                count_row++;
+                            }
+                        }
+                    }
+
+                    img_grid.Children.Add(frame, count_col, count_row);
+                    //Grid.SetColumnSpan(frame, 2);
+                    frame.HeightRequest *= 4;
+                    Grid.SetRowSpan(frame, 2);
+
+                    bool exists = false;
+                    for (int i = 0; i < busy_row.Count; i++)
+                    {
+                        if ((busy_row[i] == count_row + 1) && (busy_column[i] == count_col))
+                        {
+                            exists = true;
+                            break;
+                        }
+                    }
+
+                    if (!exists)
+                    {
+                        busy_column.Add(count_col); busy_row.Add(count_row + 1);
+                    }
+                    exists = false;
+
+
+                    multislot_item += 3;
+                }
+                else if (Convert.ToInt32(itemList.item[item_id].id) > 10 && Convert.ToInt32(itemList.item[item_id].id) < 100)                        //filling grid with "long" (2x1) items
+                {
+                    if (count_col == column_num - 1) { free_column.Add(count_col); free_row.Add(count_row); count_col = 0; count_row++; }
+
+                    for (int i = 0; i < busy_row.Count; i++)
+                    {
+                        if ((busy_column[i] == count_col && busy_row[i] == count_row) || (busy_column[i] == count_col + 1 && busy_row[i] == count_row))
+                        {
+                            count_col++;
+                            if (count_col == column_num)
+                            {
+                                count_col = 0;
+                                count_row++;
+                            }
+                        }
+                    }
+
                     img_grid.Children.Add(frame, count_col, count_row);
                     Grid.SetColumnSpan(frame, 2);
                     count_col++;
@@ -147,13 +224,40 @@ namespace App5
                 }
                 else if (free_column.Count != 0)                                                                                                //filling free cells with "short" items
                 {
+                    for (int i = 0; i < busy_row.Count; i++)
+                    {
+                        if ((busy_column[i] == count_col && busy_row[i] == count_row))
+                        {
+                            count_col++;
+                            if (count_col == column_num)
+                            {
+                                count_col = 0;
+                                count_row++;
+                            }
+                        }
+                    }
                     img_grid.Children.Add(frame, free_column[0], free_row[0]);
                     free_column.RemoveAt(0);
                     free_row.RemoveAt(0);
                     free_column.Add(count_col);
                     free_row.Add(count_row);
                 }
-                else img_grid.Children.Add(frame, count_col, count_row);                                                                        //regular filling
+                else
+                {
+                    for (int i = 0; i < busy_row.Count; i++)
+                    {
+                        if ((busy_column[i] == count_col && busy_row[i] == count_row))
+                        {
+                            count_col++;
+                            if (count_col == column_num)
+                            {
+                                count_col = 0;
+                                count_row++;
+                            }
+                        }
+                    }
+                    img_grid.Children.Add(frame, count_col, count_row);                                                                        //regular filling
+                }
                 count_col++;
                 if (count_col == column_num)
                 {
@@ -162,6 +266,7 @@ namespace App5
                 }
                 item_id++;
             }
+            
 
             int rows_recount = (int)(((double)(num + multislot_item) / column_num) + 0.99);                                                     //recounting number of rows
             
@@ -178,7 +283,7 @@ namespace App5
                 img_grid.Children.Add(empty_frame, count_col++, count_row);
             }
             */
-            for (int i = 0; i < rows_recount - rows; i++)
+            for (int i = 0; i < rows_recount - rows + 3; i++)
             {
                 img_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, HEIGHT) });                                          //adding necessary rows
             }
@@ -239,6 +344,26 @@ namespace App5
                             await DownloadInventoryItems(Player, true);
                             UserDialogs.Instance.HideLoading();
                             break;
+
+                        case itemType.armor:
+                            UserDialogs.Instance.ShowLoading("Надеваем...");
+
+                            if (String.Equals(Player.active_armor, ""))
+                            {
+                                Player.active_armor = id;
+                            }
+                            else
+                            {
+                                await DisplayAlert("Ошибка", "Некуда ебать ложить!", "Иди нахуй");
+                                UserDialogs.Instance.HideLoading();
+                                break;
+                            }
+
+                            Player.weapon_ids = NewItemAction(action, Player.armor_ids, id);
+                            await RefreshPlayer();
+                            await DownloadInventoryItems(Player, true);
+                            UserDialogs.Instance.HideLoading();
+                            break;
                             /*
                         case itemType.helmet:
                             UserDialogs.Instance.ShowLoading("Надеваем...");
@@ -247,13 +372,7 @@ namespace App5
                             Player.armor_ids = NewItemAction(action, Player.armor_ids, id);
                             UserDialogs.Instance.HideLoading();
                             break;
-                        case itemType.armor:
-                            UserDialogs.Instance.ShowLoading("Надеваем...");
-                            await RefreshPlayer();
-                            await DownloadInventoryItems(Player, true);
-                            Player.armor_ids = NewItemAction(action, Player.armor_ids, id);
-                            UserDialogs.Instance.HideLoading();
-                            break;
+                        
                         case itemType.loot:
                             //Player.armor_ids = newItemAction(action);
                             break;
@@ -273,6 +392,14 @@ namespace App5
                             await DownloadInventoryItems(Player, true);
                             UserDialogs.Instance.HideLoading();
                             break;
+
+                        case itemType.armor:
+                            UserDialogs.Instance.ShowLoading("Кидаем подальше...");
+                            Player.armor_ids = NewItemAction(action, Player.armor_ids, id);
+                            await RefreshPlayer();
+                            await DownloadInventoryItems(Player, true);
+                            UserDialogs.Instance.HideLoading();
+                            break;
                             /*
                         case itemType.helmet:
                             UserDialogs.Instance.ShowLoading("Кидаем подальше...");
@@ -281,13 +408,7 @@ namespace App5
                             await DownloadInventoryItems(Player, true);
                             UserDialogs.Instance.HideLoading();
                             break;
-                        case itemType.armor:
-                            UserDialogs.Instance.ShowLoading("Кидаем подальше...");
-                            Player.armor_ids = NewItemAction(action, Player.armor_ids, id);
-                            await RefreshPlayer();
-                            await DownloadInventoryItems(Player, true);
-                            UserDialogs.Instance.HideLoading();
-                            break;
+                        
                         case itemType.loot:
                             //Player.armor_ids = newItemAction(action);
                             break;
@@ -324,7 +445,7 @@ namespace App5
             }
         }
 
-
+        /*
         private async void ItemAction(string action, Item item)                                                                                 //menu for each item
         {
             switch (action)
@@ -384,7 +505,8 @@ namespace App5
 
             }
         }
-
+        */
+        /*
         private async void DropWeapon(Item item)
         {
             if (Player.weapon_ids.Length == 1 || Player.weapon_ids.Length == 2) Player.weapon_ids = "";
@@ -435,6 +557,7 @@ namespace App5
             await RefreshPlayer();
             UserDialogs.Instance.HideLoading();
         }
+        */
 
 
         private Task RefreshPlayer()
@@ -445,7 +568,6 @@ namespace App5
                 Methods.POST_request(serialized, "update-user-info", room);
             });
         }
-
 
         private string NewItemAction(string action, string str, string id)
         {

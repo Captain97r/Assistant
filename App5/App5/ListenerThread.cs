@@ -65,7 +65,7 @@ namespace App5
                 }
                 catch(System.Net.WebException e)
                 {
-                    Debug.WriteLine(e.ToString());
+                    Debug.WriteLine(e.ToString() + "uu");
                 }
                 catch(Exception e1)
                 {
