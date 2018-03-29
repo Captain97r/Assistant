@@ -56,8 +56,8 @@ namespace App5
 
             try { if (ImageList.ContainsKey("weapon1")) { weapon1_frame.Content = new Image() { Source = ImageSource.FromUri(new Uri(ImageList["weapon1"].image)), Rotation = 270, AutomationId= "weapon1", Scale = 1.5 }; } } catch(NullReferenceException) {  } catch (KeyNotFoundException) { weapon1_frame.Content = null; }
             try { if (ImageList.ContainsKey("weapon2")) { weapon2_frame.Content = new Image() { Source = ImageSource.FromUri(new Uri(ImageList["weapon2"].image)), Rotation = 270, AutomationId = "weapon2", Scale = 1.5 }; }  } catch (NullReferenceException) {  } catch (KeyNotFoundException) { weapon2_frame.Content = null; }
-            try { if (ImageList.ContainsKey("helmet")) {helmet_frame.Content = new Image() { Source = ImageSource.FromUri(new Uri(ImageList["helmet"].image)), Rotation = 270, AutomationId = "helmet", Scale = 1.5 }; }  } catch(NullReferenceException) {  } catch (KeyNotFoundException) { helmet_frame.Content = null; }
-            try { if (ImageList.ContainsKey("armor")) {armor_frame.Content = new Image() { Source = ImageSource.FromUri(new Uri(ImageList["armor"].image)), Rotation = 270, AutomationId = "armor", Scale = 1.5 }; }  } catch(NullReferenceException) {  } catch (KeyNotFoundException) { armor_frame.Content = null; } 
+            try { if (ImageList.ContainsKey("helmet")) {helmet_frame.Content = new Image() { Source = ImageSource.FromUri(new Uri(ImageList["helmet"].image)), AutomationId = "helmet" }; }  } catch(NullReferenceException) {  } catch (KeyNotFoundException) { helmet_frame.Content = null; }
+            try { if (ImageList.ContainsKey("armor")) {armor_frame.Content = new Image() { Source = ImageSource.FromUri(new Uri(ImageList["armor"].image)), AutomationId = "armor" }; }  } catch(NullReferenceException) {  } catch (KeyNotFoundException) { armor_frame.Content = null; } 
             try { if (ImageList.ContainsKey("boots")) {boots_frame.Content = new Image() { Source = ImageSource.FromUri(new Uri(ImageList["boots"].image)), Rotation = 270, AutomationId = "boots", Scale = 1.5 }; } } catch(NullReferenceException) {  } catch (KeyNotFoundException) { boots_frame.Content = null; }
             UserDialogs.Instance.HideLoading();
         }
@@ -154,9 +154,11 @@ namespace App5
                     break;
 
                 case "armor":
+                    armor_frame.Content = null;
                     Player.active_armor = "";
-                    //if (mode == drop.toBackpack)
-                    //Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
+                    if (mode == drop.toBackpack)
+                        Player.armor_ids = Player.armor_ids.Insert(Player.armor_ids.Length, ";" + item.id);
+                    armor_frame.Content = null;
 
                     break;
 

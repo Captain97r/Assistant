@@ -28,7 +28,7 @@ namespace App5
             Weapons = new List<Item>();
 
             AmmoReq req;
-            req = new AmmoReq() { weapon_ids = player.weapon_ids, ammo_ids = player.ammo_ids };
+            req = new AmmoReq() { weapon_ids = player.weapon_ids, ammo_ids = player.ammo_ids, armor_ids = player.armor_ids };
             string post = JsonConvert.SerializeObject(req);
             InventoryItems items = JsonConvert.DeserializeObject<InventoryItems>(Methods.POST_request(post, "get-inventory"));
 
@@ -66,6 +66,11 @@ namespace App5
                                 await RefreshPlayer();
                                 UserDialogs.Instance.HideLoading();
                                 break;
+                            case itemType.armor:
+                                Player.armor_ids = NewItemAction(action, Player.armor_ids, selectedItem.id);
+                                await RefreshPlayer();
+                                UserDialogs.Instance.HideLoading();
+                                break;
                                 /*
                             case itemType.helmet:
                                 UserDialogs.Instance.ShowLoading("Кидаем подальше...");
@@ -74,13 +79,7 @@ namespace App5
                                 await DownloadInventoryItems(Player, true);
                                 UserDialogs.Instance.HideLoading();
                                 break;
-                            case itemType.armor:
-                                UserDialogs.Instance.ShowLoading("Кидаем подальше...");
-                                Player.armor_ids = NewItemAction(action, Player.armor_ids, id);
-                                await RefreshPlayer();
-                                await DownloadInventoryItems(Player, true);
-                                UserDialogs.Instance.HideLoading();
-                                break;
+                            
                             case itemType.loot:
                                 //Player.armor_ids = newItemAction(action);
                                 break;
@@ -109,6 +108,8 @@ namespace App5
                     return itemType.weapon;
                 case 1:
                     return itemType.ammo;
+                case 2:
+                    return itemType.armor;
                 default:
                     return itemType.unknown;
             }

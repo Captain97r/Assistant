@@ -122,47 +122,13 @@
             OutlineColor="White">
             <StackLayout>
             <Label 
-                    Text="{Binding Path=hand_p, StringFormat='Владение пистолетом: {0}'}" 
+                    Text="{Binding Path=hand_p, StringFormat='Владение оружием: {0}'}" 
                     TextColor="Black" 
                     VerticalTextAlignment="Center" 
                     HorizontalTextAlignment="Start" 
                     Margin="15, 0 , 0 , 0" 
                     FontSize="17"/>
-            <Label 
-                    Text="{Binding Path=sub_p, StringFormat='Владение пистолетом-пулеметом: {0}'}" 
-                    TextColor="Black" 
-                    VerticalTextAlignment="Center" 
-                    HorizontalTextAlignment="Start" 
-                    Margin="15, 0 , 0 , 0" 
-                    FontSize="17"/>
-            <Label 
-                    Text="{Binding Path=shot_p, StringFormat='Владение дробовиком: {0}'}" 
-                    TextColor="Black" 
-                    VerticalTextAlignment="Center" 
-                    HorizontalTextAlignment="Start" 
-                    Margin="15, 0 , 0 , 0" 
-                    FontSize="17"/>
-            <Label 
-                    Text="{Binding Path=rifle_p, StringFormat='Владение винтовкой: {0}'}" 
-                    TextColor="Black" 
-                    VerticalTextAlignment="Center" 
-                    HorizontalTextAlignment="Start" 
-                    Margin="15, 0 , 0 , 0" 
-                    FontSize="17"/>
-            <Label 
-                    Text="{Binding Path=assault_p, StringFormat='Владение автоматом: {0}'}" 
-                    TextColor="Black" 
-                    VerticalTextAlignment="Center" 
-                    HorizontalTextAlignment="Start" 
-                    Margin="15, 0 , 0 , 0" 
-                    FontSize="17"/>
-            <Label 
-                    Text="{Binding Path=sniper_p, StringFormat='Владение снайперской винтовкой: {0}'}" 
-                    TextColor="Black" 
-                    VerticalTextAlignment="Center" 
-                    HorizontalTextAlignment="Start" 
-                    Margin="15, 0 , 0 , 0" 
-                    FontSize="17"/>
+            
                 </StackLayout>
         </Frame>
 

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Acr.UserDialogs;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +51,10 @@ namespace App5
                     break;
                 case "Редактировать":
                     await Navigation.PushModalAsync(new EditUser(player, room));
+                    break;
+                case "Кикнуть":
+                    string rsp = Methods.POST_request(JsonConvert.SerializeObject(new SocketReq { user = player.user, room = room}), "kick-user");
+                    await DisplayAlert("Responce", rsp, "OK");
                     break;
 
             }

@@ -32,7 +32,7 @@ namespace App5
 
             InitializeComponent();
             
-            //DownloadInventoryItems(player, false);
+            DownloadInventoryItems(player, false);
 
         }
 
@@ -119,10 +119,10 @@ namespace App5
                 trunc_grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             }
 
-            armor_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            weapon_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            ammo_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            trunc_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            //armor_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            //weapon_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            //ammo_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            //trunc_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 
 
@@ -137,8 +137,7 @@ namespace App5
             List<int> busy_column = new List<int>();                                                                                            // arrays for busy cells
             List<int> busy_row = new List<int>();
 
-            int count_col = 0, count_row = 0, item_id = 0;                                                                                      //current pos x, y and current item id
-            int multislot_item = 0;
+            int item_id = 0;                                                                                                                    //current pos x, y and current item id
 
             int armor_c = 0, armor_r = 0;
             int weapon_c = 0, weapon_r = 0;
@@ -323,7 +322,7 @@ namespace App5
                                 break;
                             }
 
-                            Player.weapon_ids = NewItemAction(action, Player.armor_ids, id);
+                            Player.armor_ids = NewItemAction(action, Player.armor_ids, id);
                             await RefreshPlayer();
                             await DownloadInventoryItems(Player, true);
                             UserDialogs.Instance.HideLoading();
@@ -385,10 +384,14 @@ namespace App5
                 case "Информация":
                     if (Convert.ToInt32(item.id) < 100)
                         await DisplayAlert("Информация", "Название: " + item.name + "\r\nТип: " + item.type + "\r\nСтрана: " + item.country + "\r\nКалибр: " + item.caliber + "x" + item.case_length + "\r\nТочность: " + Convert.ToDouble(item.accuracy) * 100 + "%\r\nУрон: " + item.damage + "\r\nСтоимость: " + item.cost, "ОК");
-                    if (Convert.ToInt32(item.id) > 100)
+                    if (Convert.ToInt32(item.id) > 100 && Convert.ToInt32(item.id) < 200)
                     {
                         if (!String.Equals(item.features, "")) await DisplayAlert("Информация", "Калибр: " + item.caliber + "x" + item.case_length + " (" + item.features + ")\r\nБронепробитие (класс брони): " + item.penetration_class, "ОК");
                         else await DisplayAlert("Информация", "Калибр: " + item.caliber + "x" + item.case_length + "\r\nБронепробитие (класс брони): " + item.penetration_class, "ОК");
+                    }
+                    if (Convert.ToInt32(item.id) > 200 && Convert.ToInt32(item.id) < 300)
+                    {
+                        await DisplayAlert("Информация", "Принадлежность: " + item.groupment + "\r\nКласс брони: " + item.penetration_class + "\r\nРадиозащита: " + item.radio_protection + "\r\nТермозащита: " + item.temp_protection + "\r\nЭлектрозащита: " + item.electric_protection + "\r\nХимзащита: " + item.chemic_protection + "\r\nХз какая-то тоже защита: " + item.psy_protection + "\r\nКласс брони: " + item.penetration_class + "\r\nКонтейнеры: " + item.containers + "\r\nПНВ: " + item.PNV + "\r\nВес: " + item.weight + "\r\nСтоимость: " + item.cost, "ОК");
                     }
                     break;
             }
@@ -404,6 +407,8 @@ namespace App5
                     return itemType.weapon;
                 case 1:
                     return itemType.ammo;
+                case 2:
+                    return itemType.armor;
                 default:
                     return itemType.unknown;
             }

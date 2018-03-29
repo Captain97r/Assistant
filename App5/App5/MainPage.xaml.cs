@@ -69,7 +69,7 @@ namespace App5
     {
         public static void MessageEventHandler(object sender, MsgEventArgs m)
         {
-            MainPage.Player.hp = Convert.ToString(Convert.ToInt32(m.current_player.hp) + Convert.ToInt32(m.current_player.stamina));
+            MainPage.Player.hp = m.current_player.hp;
             MainPage.Player.radiation = m.current_player.radiation;
             MainPage.Player.hunger = m.current_player.hunger;
             MainPage.Player.drought = m.current_player.drought;
@@ -93,7 +93,9 @@ namespace App5
             MainPage.Player.charisma = m.current_player.charisma;
 
             MainPage.Player.free_points = m.current_player.free_points;
-            
+
+            MainPage.Player.real_hp = Convert.ToString(Convert.ToInt32(m.current_player.hp) + Convert.ToInt32(m.current_player.stamina));
+
         }
     }
 }

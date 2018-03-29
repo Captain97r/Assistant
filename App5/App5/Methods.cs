@@ -391,194 +391,30 @@ namespace App5
 
     }
 
-    public class Item : INotifyPropertyChanged
+    public class Item
     {
-        private string _id;
-        private string _name;
-        private string _type;
-        private string _country;
-        private string _caliber;
-        private string _case_length;
-        private string _accuracy;
-        private string _damage;
-        private string _cost;
-        private string _features;
-        private string _penetration_class;
-        private string _image;
+        public string id { get; set; }
+        public string name { get; set; }
+        public string type { get; set; }
+        public string country { get; set; }
+        public string caliber { get; set; }
+        public string case_length { get; set; }
+        public string accuracy { get; set; }
+        public string damage { get; set; }
+        public string cost { get; set; }
+        public string features { get; set; }
+        public string penetration_class { get; set; }
+        public string image { get; set; }
 
-        private string _groupment;
-        private string _radio_protection;
-        private string _temp_protection;
-        private string _electric_protection;
-        private string _chemic_protection;
-        private string _psy_protection;
-        private string _containers;
-        private string _PNV;
-        private string _weight;
-
-        public string id
-        {
-            get { return _id; }
-            set
-            {
-                if (_id != value)
-                {
-                    _id = value;
-                    OnPropertyChanged("id");
-                }
-            }
-        }
-
-        public string name
-        {
-            get { return _name; }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    OnPropertyChanged("name");
-                }
-            }
-        }
-
-        public string type
-        {
-            get { return _type; }
-            set
-            {
-                if (_type != value)
-                {
-                    _type = value;
-                    OnPropertyChanged("type");
-                }
-            }
-        }
-
-        public string country
-        {
-            get { return _country; }
-            set
-            {
-                if (_country != value)
-                {
-                    _country = value;
-                    OnPropertyChanged("country");
-                }
-            }
-        }
-
-        public string caliber
-        {
-            get { return _caliber; }
-            set
-            {
-                if (_caliber != value)
-                {
-                    _caliber = value;
-                    OnPropertyChanged("caliber");
-                }
-            }
-        }
-
-        public string case_length
-        {
-            get { return _case_length; }
-            set
-            {
-                if (_case_length != value)
-                {
-                    _case_length = value;
-                    OnPropertyChanged("case_length");
-                }
-            }
-        }
-
-        public string accuracy
-        {
-            get { return _accuracy; }
-            set
-            {
-                if (_accuracy != value)
-                {
-                    _accuracy = value;
-                    OnPropertyChanged("accuracy");
-                }
-            }
-        }
-
-        public string damage
-        {
-            get { return _damage; }
-            set
-            {
-                if (_damage != value)
-                {
-                    _damage = value;
-                    OnPropertyChanged("damage");
-                }
-            }
-        }
-
-        public string cost
-        {
-            get { return _cost; }
-            set
-            {
-                if (_cost != value)
-                {
-                    _cost = value;
-                    OnPropertyChanged("cost");
-                }
-            }
-        }
-
-        public string features
-        {
-            get { return _features; }
-            set
-            {
-                if (_features != value)
-                {
-                    _features = value;
-                    OnPropertyChanged("features");
-                }
-            }
-        }
-
-        public string penetration_class
-        {
-            get { return _penetration_class; }
-            set
-            {
-                if (_penetration_class != value)
-                {
-                    _penetration_class = value;
-                    OnPropertyChanged("penetration_class");
-                }
-            }
-        }
-
-        public string image
-        {
-            get { return _image; }
-            set
-            {
-                if (_image != value)
-                {
-                    _image = value;
-                    OnPropertyChanged("image");
-                }
-            }
-        }
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged(string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
+        public string groupment { get; set; }
+        public string radio_protection { get; set; }
+        public string temp_protection { get; set; }
+        public string electric_protection { get; set; }
+        public string chemic_protection { get; set; }
+        public string psy_protection { get; set; }
+        public string containers { get; set; }
+        public string PNV { get; set; }
+        public string weight { get; set; }
     }
 
     public class InventoryItems : INotifyPropertyChanged
@@ -685,6 +521,8 @@ namespace App5
         private string _sniper_p;
 
         private string _free_points;
+
+        public string real_hp { get; set; }
 
         public string id
         {
