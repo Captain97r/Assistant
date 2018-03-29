@@ -5,9 +5,40 @@
              Title="Инвентарь">
     <ContentPage.Content>
         <ScrollView>
-            <Grid x:Name="img_grid">
-             
+            <StackLayout>
+            <Label x:Name="armor" Text="Броня" HorizontalTextAlignment="Center" TextColor="Black" FontSize="Large"/>
+            <Grid x:Name="armor_grid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                </Grid.ColumnDefinitions>
             </Grid>
+                <Label x:Name="weapon" Text="Оружие" HorizontalTextAlignment="Center" TextColor="Black" FontSize="Large"/>
+            <Grid x:Name="weapon_grid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                </Grid.ColumnDefinitions>
+            </Grid>
+                <Label x:Name="ammo" Text="Боеприпасы" HorizontalTextAlignment="Center" TextColor="Black" FontSize="Large"/>
+            <Grid x:Name="ammo_grid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                </Grid.ColumnDefinitions>
+            </Grid>
+                <Label x:Name="trunc" Text="Медикаменты" HorizontalTextAlignment="Center" TextColor="Black" FontSize="Large"/>
+            <Grid x:Name="trunc_grid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                </Grid.ColumnDefinitions>
+                </Grid>
+            </StackLayout>
         </ScrollView>
     </ContentPage.Content>
 </ContentPage>

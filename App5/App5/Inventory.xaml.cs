@@ -31,11 +31,7 @@ namespace App5
             Player.PropertyChanged += new PropertyChangedEventHandler(Rebuild);
 
             InitializeComponent();
-
-
-            img_grid.ColumnDefinitions = new ColumnDefinitionCollection();                                                                      //creating grid collections
-            img_grid.RowDefinitions = new RowDefinitionCollection();
-
+            
             //DownloadInventoryItems(player, false);
 
         }
@@ -99,21 +95,40 @@ namespace App5
         {
             if (isReBuild)                                                                                                                      //if grid is now rebuilding, clear all grid cells
             {
-                img_grid.ColumnDefinitions.Clear();
-                img_grid.RowDefinitions.Clear();
-                img_grid.Children.Clear();
+                armor_grid.ColumnDefinitions.Clear();
+                armor_grid.RowDefinitions.Clear();
+                armor_grid.Children.Clear();
+
+                weapon_grid.ColumnDefinitions.Clear();
+                weapon_grid.RowDefinitions.Clear();
+                weapon_grid.Children.Clear();
+
+                ammo_grid.ColumnDefinitions.Clear();
+                ammo_grid.RowDefinitions.Clear();
+                ammo_grid.Children.Clear();
+
+                trunc_grid.ColumnDefinitions.Clear();
+                trunc_grid.RowDefinitions.Clear();
+                trunc_grid.Children.Clear();
             }
             for (int i = 0; i < column_num; i++)                                                                                                //adding columns
-                img_grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star)  });
+            {
+                armor_grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                weapon_grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                ammo_grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                trunc_grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            }
+
+            armor_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            weapon_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            ammo_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            trunc_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 
-            int rows = (int)(((double)num / column_num) + 0.99);                                                                                //preliminary counting and adding rows
-            for (int i = 0; i < rows; i++)
-                img_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, HEIGHT) });
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////     VARIABLE DEFINITIONS     /////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////     VARIABLE DEFINITIONS     /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
             List<int> free_column = new List<int>();                                                                                            //arrays for free cells
@@ -124,6 +139,11 @@ namespace App5
 
             int count_col = 0, count_row = 0, item_id = 0;                                                                                      //current pos x, y and current item id
             int multislot_item = 0;
+
+            int armor_c = 0, armor_r = 0;
+            int weapon_c = 0, weapon_r = 0;
+            int ammo_c = 0, ammo_r = 0;
+            int trunc_c = 0, trunc_r = 0;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,139 +174,83 @@ namespace App5
                 frame.GestureRecognizers.Add(gestureRecognizer);
 
 
-                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                ////////////////////////////////////////////////////////////////////////////      ITEMS DISTRIBUTION     /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////      ITEMS DISTRIBUTION     /////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
                 if (Convert.ToInt32(itemList.item[item_id].id) > 200 && Convert.ToInt32(itemList.item[item_id].id) < 300)                        //filling grid with "large" (2x3) items
                 {
-                    
-                    for (int i = 0; i < busy_row.Count; i++)
-                    {
-                        if ((busy_column[i] == count_col && busy_row[i] == count_row))
-                        {
-                            count_col++;
-                            if (count_col == column_num)
-                            {
-                                count_col = 0;
-                                count_row++;
-                            }
-                        }
-                    }
-
-                    img_grid.Children.Add(frame, count_col, count_row);
+                    armor_grid.Children.Add(frame, armor_c, armor_r);
                     //Grid.SetColumnSpan(frame, 2);
                     frame.HeightRequest *= 4;
-                    Grid.SetRowSpan(frame, 2);
 
-                    bool exists = false;
-                    for (int i = 0; i < busy_row.Count; i++)
+                    armor_c++;
+                    if (armor_c == column_num)
                     {
-                        if ((busy_row[i] == count_row + 1) && (busy_column[i] == count_col))
-                        {
-                            exists = true;
-                            break;
-                        }
+                        armor_r ++;
+                        armor_c = 0;
+                        armor_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, HEIGHT) });
                     }
-
-                    if (!exists)
-                    {
-                        busy_column.Add(count_col); busy_row.Add(count_row + 1);
-                    }
-                    exists = false;
-
-
-                    multislot_item += 3;
                 }
                 else if (Convert.ToInt32(itemList.item[item_id].id) > 10 && Convert.ToInt32(itemList.item[item_id].id) < 100)                        //filling grid with "long" (2x1) items
                 {
-                    if (count_col == column_num - 1) { free_column.Add(count_col); free_row.Add(count_row); count_col = 0; count_row++; }
+                    if (weapon_c == column_num - 1) { free_column.Add(weapon_c); free_row.Add(weapon_r); weapon_c = 0; weapon_r++; }
 
-                    for (int i = 0; i < busy_row.Count; i++)
-                    {
-                        if ((busy_column[i] == count_col && busy_row[i] == count_row) || (busy_column[i] == count_col + 1 && busy_row[i] == count_row))
-                        {
-                            count_col++;
-                            if (count_col == column_num)
-                            {
-                                count_col = 0;
-                                count_row++;
-                            }
-                        }
-                    }
-
-                    img_grid.Children.Add(frame, count_col, count_row);
+                    weapon_grid.Children.Add(frame, weapon_c, weapon_r);
                     Grid.SetColumnSpan(frame, 2);
-                    count_col++;
-                    multislot_item++;
+
+                    weapon_c++;
+                    weapon_c++;
+                    if (weapon_c == column_num)
+                    {
+                        weapon_r++;
+                        weapon_c = 0;
+                        weapon_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, HEIGHT) });
+                    }
+                }
+                else if ((free_column.Count == 0) && (Convert.ToInt32(itemList.item[item_id].id) < 11) && (Convert.ToInt32(itemList.item[item_id].id) > 0))
+                {
+                    weapon_grid.Children.Add(frame, weapon_c, weapon_r);
+                    weapon_c++;
+                    if (weapon_c == column_num)
+                    {
+                        weapon_r++;
+                        weapon_c = 0;
+                        weapon_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, HEIGHT) });
+                    }
+                }
+                else if (Convert.ToInt32(itemList.item[item_id].id) > 100 && Convert.ToInt32(itemList.item[item_id].id) < 200)
+                {
+                    ammo_grid.Children.Add(frame, ammo_c, ammo_r);                                                                        
+                    ammo_c++;
+                    if (ammo_c == column_num)
+                    {
+                        ammo_r++;
+                        ammo_c = 0;
+                        ammo_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, HEIGHT) });
+                    }
                 }
                 else if (free_column.Count != 0)                                                                                                //filling free cells with "short" items
                 {
-                    for (int i = 0; i < busy_row.Count; i++)
-                    {
-                        if ((busy_column[i] == count_col && busy_row[i] == count_row))
-                        {
-                            count_col++;
-                            if (count_col == column_num)
-                            {
-                                count_col = 0;
-                                count_row++;
-                            }
-                        }
-                    }
-                    img_grid.Children.Add(frame, free_column[0], free_row[0]);
+                    weapon_grid.Children.Add(frame, free_column[0], free_row[0]);
                     free_column.RemoveAt(0);
                     free_row.RemoveAt(0);
-                    free_column.Add(count_col);
-                    free_row.Add(count_row);
+                    free_column.Add(weapon_c);
+                    free_row.Add(weapon_r);
                 }
-                else
-                {
-                    for (int i = 0; i < busy_row.Count; i++)
-                    {
-                        if ((busy_column[i] == count_col && busy_row[i] == count_row))
-                        {
-                            count_col++;
-                            if (count_col == column_num)
-                            {
-                                count_col = 0;
-                                count_row++;
-                            }
-                        }
-                    }
-                    img_grid.Children.Add(frame, count_col, count_row);                                                                        //regular filling
-                }
-                count_col++;
-                if (count_col == column_num)
-                {
-                    count_row++;
-                    count_col = 0;
-                }
+
                 item_id++;
             }
-            
-
-            int rows_recount = (int)(((double)(num + multislot_item) / column_num) + 0.99);                                                     //recounting number of rows
-            
-            /*
-            while (count_col < column_num && count_col != 0)
-            {
-                Label label = new Label();
-                label.Text = Convert.ToString(count_col);
-                Frame empty_frame = new Frame()
-                {
-                    OutlineColor = Color.White,
-                    Content = label
-                };
-                img_grid.Children.Add(empty_frame, count_col++, count_row);
-            }
-            */
-            for (int i = 0; i < rows_recount - rows + 3; i++)
-            {
-                img_grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, HEIGHT) });                                          //adding necessary rows
-            }
+            if (armor_r == 0 && armor_c == 0) armor.HeightRequest = 0;
+            else armor.HeightRequest = 30;
+            if (weapon_r == 0 && weapon_c == 0) weapon.HeightRequest = 0;
+            else weapon.HeightRequest = 30;
+            if (ammo_r == 0 && ammo_c == 0) ammo.HeightRequest = 0;
+            else ammo.HeightRequest = 30;
+            if (trunc_r == 0 && trunc_c == 0) trunc.HeightRequest = 0;
+            else trunc.HeightRequest = 30;
         }
 
 
