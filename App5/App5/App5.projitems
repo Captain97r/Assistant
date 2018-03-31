@@ -21,6 +21,10 @@
       <DependentUpon>Ammo.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)AddItems\Armor.xaml.cs">
+      <DependentUpon>Armor.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)AddItems\Assault_rifles.xaml.cs">
       <DependentUpon>Assault_rifles.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -222,6 +226,12 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)FreePoints_Popup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)AddItems\Armor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

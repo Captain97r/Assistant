@@ -25,6 +25,7 @@ namespace App5.AddItems
             this.Children.Add(new Assault_rifles(player, room));
             this.Children.Add(new Rifles(player, room));
             this.Children.Add(new Ammo(player, room));
+            this.Children.Add(new Armor(player, room));
 
             InitializeComponent();
         }

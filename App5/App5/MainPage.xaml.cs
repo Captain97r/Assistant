@@ -70,11 +70,12 @@ namespace App5
         public static void MessageEventHandler(object sender, MsgEventArgs m)
         {
             MainPage.Player.hp = m.current_player.hp;
+            MainPage.Player.full_hp = m.current_player.full_hp;
             MainPage.Player.radiation = m.current_player.radiation;
             MainPage.Player.hunger = m.current_player.hunger;
             MainPage.Player.drought = m.current_player.drought;
             MainPage.Player.money = m.current_player.money;
-            MainPage.Player.isAlive = m.current_player.isAlive;
+            //MainPage.Player.isAlive = m.current_player.isAlive;
             MainPage.Player.isBleeding = m.current_player.isBleeding;
 
             MainPage.Player.weapon_ids = m.current_player.weapon_ids;
@@ -95,6 +96,9 @@ namespace App5
             MainPage.Player.free_points = m.current_player.free_points;
 
             MainPage.Player.real_hp = Convert.ToString(Convert.ToInt32(m.current_player.hp) + Convert.ToInt32(m.current_player.stamina));
+
+            if (Convert.ToInt32(MainPage.Player.real_hp) <= 0) MainPage.Player.isAlive = "Мертв";
+            else MainPage.Player.isAlive = "В игре";
 
         }
     }

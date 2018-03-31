@@ -490,6 +490,7 @@ namespace App5
         private string _id;
         private string _user;
         private string _hp;
+        private string _full_hp;
         private string _hunger;
         private string _drought;
         private string _radiation;
@@ -560,6 +561,18 @@ namespace App5
                 }
             }
         }
+        public string full_hp
+        {
+            get { return _full_hp; }
+            set
+            {
+                if (_full_hp != value)
+                {
+                    _full_hp = value;
+                    OnPropertyChanged("full_hp");
+                }
+            }
+        }
         public string hunger
         {
             get { return _hunger; }
@@ -614,31 +627,24 @@ namespace App5
         {
             get
             {
-                return _isAlive;
+                if (Convert.ToInt32(_full_hp) <= 0)
+                {
+                    return "Мертв";
+                }
+                else
+                {
+                    return "В игре";
+                }
             }
             set
             {
-                if ((String.Equals(_isAlive, "") && (Convert.ToInt32(_hp) < 0)) || (String.Equals(_isAlive, null) && (Convert.ToInt32(_hp) < 0)))
+                if (_isAlive != value)
                 {
-                    _isAlive = "Мертв";
-                    OnPropertyChanged("isAlive");
-                }
-                else if ((String.Equals(_isAlive, "") && (Convert.ToInt32(_hp) > 0)) || (String.Equals(_isAlive, null) && (Convert.ToInt32(_hp) < 0)))
-                {
-                    _isAlive = "В игре";
-                    OnPropertyChanged("isAlive");
-                }
-                else if ((String.Equals(_isAlive, "В игре") && (Convert.ToInt32(_hp) < 0)))
-                { 
-                    _isAlive = "Мертв";
-                    OnPropertyChanged("isAlive");
-                }
-                else  if((String.Equals(_isAlive, "Мертв") && (Convert.ToInt32(_hp) > 0)))
-                {
-                    _isAlive = "В игре";
+                    _isAlive = value;
                     OnPropertyChanged("isAlive");
                 }
             }
+            
         }
         public string isBleeding
         {

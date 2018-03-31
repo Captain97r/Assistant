@@ -73,7 +73,7 @@
             OutlineColor="White">
             <StackLayout>
                 <Label
-                Text="{Binding Path=hp, StringFormat='HP: {0}'}" 
+                Text="{Binding Path=full_hp, StringFormat='HP: {0}'}" 
                 TextColor="Green" 
                 VerticalTextAlignment="Center" 
                 HorizontalTextAlignment="Center"/>
