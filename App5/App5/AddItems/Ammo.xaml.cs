@@ -47,10 +47,13 @@ namespace App5.AddItems
             Item selectedItem = e.Item as Item;
             if (selectedItem != null)
             {
-                Player.ammo_ids = Player.weapon_ids.Insert(Player.ammo_ids.Length, ";" + selectedItem.id);
-                UserDialogs.Instance.ShowLoading("Добавляем...");
-                await RefreshPlayer();
-                UserDialogs.Instance.HideLoading();
+                if (selectedItem != null)
+                {
+                    UserDialogs.Instance.ShowLoading("Добавляем...");
+                    Player.ammo_ids = AddItem.Insert(Player.ammo_ids, selectedItem.id);
+                    await RefreshPlayer();
+                    UserDialogs.Instance.HideLoading();
+                }
             }
         }
 

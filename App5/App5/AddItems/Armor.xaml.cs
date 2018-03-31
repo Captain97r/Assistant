@@ -49,15 +49,15 @@ namespace App5.AddItems
             Item selectedItem = e.Item as Item;
             if (selectedItem != null)
             {
-                string insert = ";" + selectedItem.id;
-                if (String.Equals(Player.armor_ids, null) || String.Equals(Player.armor_ids, "")) Player.armor_ids = selectedItem.id;
-                else Player.armor_ids = Player.armor_ids.Insert(Player.armor_ids.Length, insert);
                 UserDialogs.Instance.ShowLoading("Добавляем...");
+                Player.armor_ids = AddItem.Insert(Player.armor_ids, selectedItem.id);
                 await RefreshPlayer();
                 UserDialogs.Instance.HideLoading();
             }
         }
 
+
+        
 
         private Task RefreshPlayer()
         {

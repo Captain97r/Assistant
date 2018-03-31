@@ -133,7 +133,7 @@ namespace App5
                 case "weapon1":
                     Player.active_weapon1 = "";
                     if (mode == drop.toBackpack)
-                        Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
+                        Player.weapon_ids = Insert(Player.weapon_ids, item.id);
                     weapon1_frame.Content = null;
 
                     break;
@@ -141,7 +141,7 @@ namespace App5
                 case "weapon2":
                     Player.active_weapon2 = "";
                     if (mode == drop.toBackpack)
-                        Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
+                        Player.weapon_ids = Insert(Player.weapon_ids, item.id);
                     weapon2_frame.Content = null;
 
                     break;
@@ -149,7 +149,7 @@ namespace App5
                 case "helmet":
                     Player.active_helmet = "";
                     //if (mode == drop.toBackpack)
-                    //Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
+                    //Player.weapon_ids = Insert(Player.weapon_ids, item.id);
 
                     break;
 
@@ -157,7 +157,7 @@ namespace App5
                     armor_frame.Content = null;
                     Player.active_armor = "";
                     if (mode == drop.toBackpack)
-                        Player.armor_ids = Player.armor_ids.Insert(Player.armor_ids.Length, ";" + item.id);
+                        Player.armor_ids = Insert(Player.armor_ids, item.id);
                     armor_frame.Content = null;
 
                     break;
@@ -165,7 +165,7 @@ namespace App5
                 case "boots":
                     Player.active_boots = "";
                     //if (mode == drop.toBackpack)
-                    //Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, ";" + item.id);
+                    //Player.weapon_ids = Insert(Player.weapon_ids, item.id);
 
                     break;
 
@@ -175,6 +175,17 @@ namespace App5
             }
             await RefreshPlayer();
             UserDialogs.Instance.HideLoading();
+        }
+
+        private string Insert(string str, string id)
+        {
+            string[] items = str.Split(';');
+            List<string> result;
+            if (!String.Equals(str, "")) result = new List<string>(items);
+            else result = new List<string>();
+            result.Add(id);
+            str = String.Join(";", result);
+            return str;
         }
 
 

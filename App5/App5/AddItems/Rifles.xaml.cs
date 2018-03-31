@@ -46,10 +46,8 @@ namespace App5.AddItems
             Item selectedItem = e.Item as Item;
             if (selectedItem != null)
             {
-                string insert = ";" + selectedItem.id;
-                if (String.Equals(Player.weapon_ids, null) || String.Equals(Player.weapon_ids, "")) Player.weapon_ids = selectedItem.id;
-                else Player.weapon_ids = Player.weapon_ids.Insert(Player.weapon_ids.Length, insert);
                 UserDialogs.Instance.ShowLoading("Добавляем...");
+                Player.weapon_ids = AddItem.Insert(Player.weapon_ids, selectedItem.id);
                 await RefreshPlayer();
                 UserDialogs.Instance.HideLoading();
             }

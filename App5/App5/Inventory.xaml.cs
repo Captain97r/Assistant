@@ -540,26 +540,18 @@ namespace App5
 
         private string NewItemAction(string action, string str, string id)
         {
-            if (str.IndexOf(";") == -1)
+            bool founded = false;
+            string[] items = str.Split(';');
+            List<string> result = new List<string>();
+            for (int i = 0; i < items.Length; i++)
             {
-                if (str.Length == 1 || str.Length == 2 || str.Length == 3) str = "";
+                if (!String.Equals(items[i], id)) result.Add(items[i]);
+                else if (!founded)
+                    founded = true;
+                else
+                    result.Add(items[i]);
             }
-            else
-            {
-                str = str.Substring(0, str.IndexOf(id)) + str.Substring(str.IndexOf(id) + (id).Length);
-                if (str.IndexOf(";;") != -1)
-                {
-                    str = str.Substring(0, str.IndexOf(";;")) + str.Substring(str.IndexOf(";;") + 1);
-                }
-                if ((String.Equals(str.Substring(0, 1), ";")))
-                {
-                    str = str.Substring(1);
-                }
-                if ((String.Equals(str.Substring(str.Length - 1, 1), ";")))
-                {
-                    str = str.Substring(0, str.Length - 1);
-                }
-            }
+            str = String.Join(";", result);
             return str;
         }
     }

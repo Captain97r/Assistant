@@ -29,6 +29,19 @@ namespace App5.AddItems
 
             InitializeComponent();
         }
+
+
+
+        public static string Insert(string str, string id)
+        {
+            string[] items = str.Split(';');
+            List<string> result;
+            if (!String.Equals(str, "")) result = new List<string>(items);
+            else result = new List<string>();
+            result.Add(id);
+            str = String.Join(";", result);
+            return str;
+        }
     }
 
 }
